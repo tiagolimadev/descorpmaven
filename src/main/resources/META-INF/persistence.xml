@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+  <persistence-unit name="com.ifpe.tads_descorp_jar_1.0-SNAPSHOTPU" transaction-type="RESOURCE_LOCAL">
+    <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+    <class>com.ifpe.tads.descorp.model.produto.Produto</class>
+    <class>com.ifpe.tads.descorp.model.produto.compra.Compra</class>
+    <class>com.ifpe.tads.descorp.model.produto.ItemCompra</class>
+    <class>com.ifpe.tads.descorp.model.produto.fornecedor.Fornecedor</class>
+    <class>com.ifpe.tads.descorp.model.produto.venda.Venda</class>
+    <class>com.ifpe.tads.descorp.model.produto.ItemVenda</class>
+    <class>com.ifpe.tads.descorp.model.produto.Categoria</class>
+    <class>com.ifpe.tads.descorp.model.produto.usuario.Usuario</class>
+    <class>com.ifpe.tads.descorp.model.produto.usuario.Operador</class>
+    <class>com.ifpe.tads.descorp.model.produto.usuario.Administrador</class>
+    <class>com.ifpe.tads.descorp.model.produto.usuario.Cliente</class>
+    <class>com.ifpe.tads.descorp.model.produto.cartao.CartaoDeCredito</class>
+    <class>com.ifpe.tads.descorp.model.produto.endereco.Endereco</class>
+    <properties>
+      <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/descorp?serverTimezone=UTC"/>
+      <property name="javax.persistence.jdbc.user" value="root"/>
+      <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
+      <property name="javax.persistence.jdbc.password" value="root"/>
+      <property name="javax.persistence.schema-generation.database.action" value="drop-and-create"/>
+      <property name="eclipselink.logging.level" value="FINE"/>
+    </properties>
+  </persistence-unit>
+</persistence>
