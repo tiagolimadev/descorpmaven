@@ -89,4 +89,24 @@ public class ItemCompra implements Serializable {
         this.compra = compra;
     }
     
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (id != null ? id.hashCode() : 0);
+        return hash;
+    }
+    
+    @Override
+    public boolean equals(Object object) {
+        if (!(object instanceof ItemCompra)) {
+            return false;
+        }
+        ItemCompra other = (ItemCompra) object;
+        
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+            return false;
+        }
+        
+        return false;
+    }
 }
