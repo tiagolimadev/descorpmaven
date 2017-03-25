@@ -35,7 +35,7 @@ import javax.persistence.Transient;
 @Entity
 @Table(name = "TB_USUARIO")
 @Inheritance(strategy = InheritanceType.JOINED)
-@DiscriminatorColumn(name = "DIS_USUARIO",
+@DiscriminatorColumn(name = "U",
         discriminatorType = DiscriminatorType.STRING, length = 1)
 @Access(AccessType.FIELD)
 public class Usuario implements Serializable {
@@ -46,22 +46,30 @@ public class Usuario implements Serializable {
     
     @Column(name = "TXT_NOME")
     private String nome;
+    
     @Column(name = "TXT_EMAIL")
     private String email;
+    
     @Column(name = "TXT_LOGIN")
     private String login;
+    
     @Column(name = "TXT_SENHA")
     private String senha;
+    
     @Column(name = "TXT_CPF")
     private String cpf;
+    
     @Column(name = "DT_NASCIMENTO")
     @Temporal(TemporalType.DATE)
     private Date dataNascimento;
+    
     @Enumerated(EnumType.STRING)
     @Column(name = "TXT_TIPO_USUARIO")
     private TipoUsuario tipo;
+    
     @ManyToMany(mappedBy = "usuarios")
     private List<Endereco> enderecos;
+    
     @Transient
     private Integer idade;
 

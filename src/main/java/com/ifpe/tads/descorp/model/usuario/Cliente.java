@@ -23,12 +23,14 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "TB_CLIENTE")
-@DiscriminatorValue(value = "CLIENTE")
+@DiscriminatorValue(value = "C")
 @PrimaryKeyJoinColumn(name = "ID_CLIENTE", referencedColumnName = "ID")
 public class Cliente extends Usuario implements Serializable {
+    
     @OneToMany(mappedBy = "cliente", fetch = FetchType.LAZY,
             cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CartaoDeCredito> cartoes;
+    
     @OneToMany(mappedBy = "cliente", fetch = FetchType.LAZY,
             cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Venda> vendas;

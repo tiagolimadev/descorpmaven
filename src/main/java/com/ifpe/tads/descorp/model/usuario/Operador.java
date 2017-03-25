@@ -22,9 +22,10 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "TB_OPERADOR")
-@DiscriminatorValue(value = "OPERADOR")
+@DiscriminatorValue(value = "O")
 @PrimaryKeyJoinColumn(name = "ID_OPERADOR", referencedColumnName = "ID")
 public class Operador extends Usuario implements Serializable {
+    
     @OneToMany(mappedBy = "operador", fetch = FetchType.LAZY,
             cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Venda> vendas;

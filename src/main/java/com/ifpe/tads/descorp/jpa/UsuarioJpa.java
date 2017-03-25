@@ -5,9 +5,12 @@
  */
 package com.ifpe.tads.descorp.jpa;
 
+import com.ifpe.tads.descorp.model.usuario.Cliente;
 import com.ifpe.tads.descorp.model.usuario.TipoUsuario;
 import com.ifpe.tads.descorp.model.usuario.Usuario;
+import com.ifpe.tads.descorp.model.venda.Venda;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Date;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -20,17 +23,24 @@ import javax.persistence.Persistence;
  */
 public class UsuarioJpa {
     public static void main(String[] args) {
-        Usuario usuario = createUsuario();
-        System.out.println(usuario.getCpf());
+        Cliente c = new Cliente();
+        c.setNome("XXXX");
+        c.setCpf("01239123");
+        c.setEmail("sadasfasf@asfasf.com");
+        c.setDataNascimento(new Date());
+        c.setLogin("AAA");
+        c.setSenha("mmmm");
+        
+        System.out.println(c.getCpf());
         EntityManagerFactory emf = null;
         EntityManager em = null;
         EntityTransaction et = null;
         try {
-            emf = Persistence.createEntityManagerFactory("com.ifpe.tads_descorp_jar_1.0-SNAPSHOTPU");
+            emf = Persistence.createEntityManagerFactory("descorp");
             em = emf.createEntityManager();
             et = em.getTransaction();
             et.begin();
-            em.persist(usuario);
+            em.persist(c);
             et.commit();
         } catch (Exception e) {
             if (et != null) {

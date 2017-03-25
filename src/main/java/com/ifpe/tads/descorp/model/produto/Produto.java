@@ -5,6 +5,7 @@
  */
 package com.ifpe.tads.descorp.model.produto;
 
+import com.ifpe.tads.descorp.model.compra.ItemCompra;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.CascadeType;
@@ -30,14 +31,19 @@ public class Produto implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    
     @Column(name = "TXT_CODIGO")
     private String codigo;
+    
     @Column(name = "TXT_NOME")
     private String nome;
+    
     @Column(name = "TXT_DESCRICAO")
     private String descricao;
+    
     @Column(name = "NUM_PRECO")
     private Double preco;
+    
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "TB_PRODUTOS_CATEGORIAS", joinColumns = {
         @JoinColumn(name = "ID_PRODUTO")},
@@ -45,14 +51,15 @@ public class Produto implements Serializable {
                 @JoinColumn(name = "ID_CATEGORIA")
     })
     private List<Categoria> categorias;
+    
     @OneToMany(mappedBy = "produto", fetch = FetchType.LAZY,
             cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItemCompra> itensCompras;
+    
     @OneToMany(mappedBy = "produto", fetch = FetchType.LAZY,
             cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItemCompra> itensVendas;
     
-
     public Long getId() {
         return id;
     }

@@ -5,8 +5,6 @@
  */
 package com.ifpe.tads.descorp.model.venda;
 
-import com.ifpe.tads.descorp.model.compra.Compra;
-import com.ifpe.tads.descorp.model.produto.ItemVenda;
 import com.ifpe.tads.descorp.model.usuario.Cliente;
 import com.ifpe.tads.descorp.model.usuario.Operador;
 import java.io.Serializable;
@@ -25,6 +23,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 /**
  *
@@ -33,26 +32,38 @@ import javax.persistence.TemporalType;
 @Entity
 @Table(name = "TB_VENDA")
 public class Venda implements Serializable {
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "NUM_VALOR_TOTAL")
+    
+    @Transient
     private Double valorTotal;
-    @Column(name = "NUM_VALOR_PAGAMENTO")
-    private Double valorPagamento;
+    
     @Temporal(TemporalType.DATE)
-    @Column(name = "DT_DATA_VENDA")
+    @Column(name = "DT_DATA_VENDA", nullable = false)
     private Date dataVenda;
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(name = "ID_OPERADOR", referencedColumnName = "ID")
     private Operador operador;
+    
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "ID_CLIENTE", referencedColumnName = "ID")
     private Cliente cliente;
+    
     @OneToMany(mappedBy = "venda", fetch = FetchType.LAZY,
             cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItemVenda> itensVenda;
 
+    private void calcularValorTotal() {
+        double total = 0; 
+        for(ItemVenda item : this.itensVenda){
+            total += item.getSubTotal();
+        }
+        this.valorTotal = total;
+    }
+    
     public Long getId() {
         return id;
     }
@@ -62,19 +73,12 @@ public class Venda implements Serializable {
     }
 
     public Double getValorTotal() {
+        this.calcularValorTotal();
         return valorTotal;
     }
 
     public void setValorTotal(Double valorTotal) {
         this.valorTotal = valorTotal;
-    }
-
-    public Double getValorPagamento() {
-        return valorPagamento;
-    }
-
-    public void setValorPagamento(Double valorPagamento) {
-        this.valorPagamento = valorPagamento;
     }
 
     public Date getDataVenda() {

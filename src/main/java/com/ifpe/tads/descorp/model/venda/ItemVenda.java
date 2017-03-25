@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.ifpe.tads.descorp.model.produto;
+package com.ifpe.tads.descorp.model.venda;
 
-import com.ifpe.tads.descorp.model.venda.Venda;
+import com.ifpe.tads.descorp.model.produto.Produto;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -25,22 +25,32 @@ import javax.persistence.Transient;
 @Entity
 @Table(name = "TB_ITEM_VENDA")
 public class ItemVenda implements Serializable {
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "NUM_QUANTIDADE")
+    
+    @Column(name = "NUM_QUANTIDADE", nullable = false)
     private Integer quantidade;
-    @Column(name = "NUM_PRECO_UNITARIO")
+    
+    @Column(name = "NUM_PRECO_UNITARIO", nullable = false)
     private Double precoUnitario;
+    
     @Transient
     private Double subTotal;
+    
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "ID_PRODUTO", referencedColumnName = "ID")
     private Produto produto;
+    
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "ID_VENDA", referencedColumnName = "ID")
     private Venda venda;
 
+    private void calcularSubTotal(){
+        this.subTotal = this.precoUnitario * this.quantidade;
+    }
+    
     public Long getId() {
         return id;
     }
@@ -66,6 +76,7 @@ public class ItemVenda implements Serializable {
     }
 
     public Double getSubTotal() {
+        this.calcularSubTotal();
         return subTotal;
     }
 
