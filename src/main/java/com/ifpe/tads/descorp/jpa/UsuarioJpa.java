@@ -5,10 +5,13 @@
  */
 package com.ifpe.tads.descorp.jpa;
 
+import com.ifpe.tads.descorp.model.compra.Compra;
+import com.ifpe.tads.descorp.model.compra.ItemCompra;
+import com.ifpe.tads.descorp.model.produto.Produto;
+import com.ifpe.tads.descorp.model.usuario.Administrador;
 import com.ifpe.tads.descorp.model.usuario.Cliente;
 import com.ifpe.tads.descorp.model.usuario.TipoUsuario;
 import com.ifpe.tads.descorp.model.usuario.Usuario;
-import com.ifpe.tads.descorp.model.venda.Venda;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
@@ -22,7 +25,68 @@ import javax.persistence.Persistence;
  * @author Maurício
  */
 public class UsuarioJpa {
+
     public static void main(String[] args) {
+        
+        Produto prod = new Produto();
+        prod.setDescricao("asdk");
+        prod.setNome("ASD");
+        prod.setPreco(1.0);
+
+        Administrador a = new Administrador();
+        a.setLogin("A");
+        a.setSenha("a");
+        a.setNome("aAa");
+        a.setCompras(new ArrayList<Compra>());
+        a.setEmail("A");
+        a.setCpf("A");
+
+        Compra compra = new Compra();
+        compra.setAdministrador(a);
+        compra.setDataCompra(new Date());
+        compra.setItensCompra(new ArrayList<ItemCompra>());
+
+        ItemCompra ic = new ItemCompra();
+        ic.setCompra(compra);
+        ic.setProduto(prod);
+        ic.setPrecoUnitario(ic.getProduto().getPreco());
+        ic.setQuantidade(5);
+        System.out.println(ic.getSubTotal());
+        
+        compra.getItensCompra().add(ic);
+        System.out.println(compra.getValorTotal());
+        a.getCompras().add(compra);
+
+        EntityManagerFactory emf = null;
+        EntityManager em = null;
+        EntityTransaction et;
+
+        emf = Persistence.createEntityManagerFactory("descorp");
+        em = emf.createEntityManager();
+        et = em.getTransaction();
+        et.begin();
+        em.persist(prod);
+        em.persist(a);
+        et.commit();
+        em.close();
+        emf.close();
+
+    }
+
+    private static Usuario createUsuario() {
+        Usuario usuario = new Usuario();
+        usuario.setNome("Tiago Lima");
+        usuario.setEmail("tiagolimadev@outlook.com");
+        usuario.setLogin("tiagolima");
+        usuario.setSenha("123");
+        usuario.setCpf("123.456.789-10");
+        usuario.setDataNascimento(Date.from(Instant.EPOCH));
+        usuario.setTipo(TipoUsuario.ADMINISTRADOR);
+
+        return usuario;
+    }
+
+    private static void testeUsuario() {
         Cliente c = new Cliente();
         c.setNome("XXXX");
         c.setCpf("01239123");
@@ -30,7 +94,7 @@ public class UsuarioJpa {
         c.setDataNascimento(new Date());
         c.setLogin("AAA");
         c.setSenha("mmmm");
-        
+
         System.out.println(c.getCpf());
         EntityManagerFactory emf = null;
         EntityManager em = null;
@@ -54,18 +118,5 @@ public class UsuarioJpa {
                 emf.close();
             }
         }
-    }
-    
-    private static Usuario createUsuario() {
-        Usuario usuario = new Usuario();
-        usuario.setNome("Tiago Lima");
-        usuario.setEmail("tiagolimadev@outlook.com");
-        usuario.setLogin("tiagolima");
-        usuario.setSenha("123");
-        usuario.setCpf("123.456.789-10");
-        usuario.setDataNascimento(Date.from(Instant.EPOCH));
-        usuario.setTipo(TipoUsuario.ADMINISTRADOR);
-        
-        return usuario;
     }
 }

@@ -7,7 +7,9 @@ package com.ifpe.tads.descorp.model.usuario;
 
 import com.ifpe.tads.descorp.model.endereco.Endereco;
 import java.io.Serializable;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
@@ -72,6 +74,19 @@ public class Usuario implements Serializable {
     
     @Transient
     private Integer idade;
+    
+    private void calcularIdade() {
+        Calendar nascimento = new GregorianCalendar();
+        nascimento.setTime(this.dataNascimento);
+        Calendar hoje = Calendar.getInstance();
+        Integer idade = hoje.get(Calendar.YEAR) - nascimento.get(Calendar.YEAR);
+        nascimento.add(Calendar.YEAR, idade);
+        
+        if (hoje.before(nascimento)) {
+            idade--;
+        }
+        this.idade = idade;
+    }
 
     public Long getId() {
         return id;
@@ -146,6 +161,7 @@ public class Usuario implements Serializable {
     }
     
     public Integer getIdade() {
+        this.calcularIdade();
         return idade;
     }
 

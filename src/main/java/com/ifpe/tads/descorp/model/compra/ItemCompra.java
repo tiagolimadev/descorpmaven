@@ -5,7 +5,6 @@
  */
 package com.ifpe.tads.descorp.model.compra;
 
-import com.ifpe.tads.descorp.model.compra.Compra;
 import com.ifpe.tads.descorp.model.produto.Produto;
 import java.io.Serializable;
 import javax.persistence.Column;
