@@ -27,29 +27,39 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "TB_ENDERECO")
 public class Endereco implements Serializable {
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    
     @Column(name = "TXT_LOGRADOURO")
     private String logradouro;
+    
     @Column(name = "TXT_COMPLEMENTO")
     private String complemento;
+    
     @Column(name = "NUM_NUMERO")
     private Integer numero;
+    
     @Column(name = "TXT_CEP")
     private String cep;
+    
     @Column(name = "TXT_BAIRRO")
     private String bairro;
+    
     @Column(name = "TXT_CIDADE")
     private String cidade;
+    
     @Column(name = "TXT_ESTADO")
     private String estado;
+    
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "TB_ENDERECOS_FORNECEDOR", joinColumns = {
         @JoinColumn(name = "ID_ENDERECO")},
             inverseJoinColumns = {
                 @JoinColumn(name = "ID_FORNECEDOR")})
     private List<Fornecedor> fornecedores;
+    
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "TB_ENDERECOS_USUARIO", joinColumns = {
         @JoinColumn(name = "ID_ENDERECO")},
