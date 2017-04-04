@@ -5,6 +5,7 @@
  */
 package com.ifpe.tads.descorp.model.venda;
 
+import com.ifpe.tads.descorp.jpa.JpaUtil;
 import com.ifpe.tads.descorp.model.usuario.Cliente;
 import com.ifpe.tads.descorp.model.usuario.Operador;
 import java.io.Serializable;
@@ -13,6 +14,9 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -62,6 +66,86 @@ public class Venda implements Serializable {
             total += item.getSubTotal();
         }
         this.valorTotal = total;
+    }
+    
+    public static Venda selecionarVenda(Long id){
+        EntityManagerFactory emf = JpaUtil.getInstance();
+        EntityManager em = emf.createEntityManager();
+        Venda venda = null;
+        
+        try {
+            
+            venda = em.find(Venda.class, id);
+            
+            if(venda != null){
+                System.out.println("Venda selecionada: "+ venda.getId());
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        
+        return venda;
+    }
+    
+    public void inserirVenda() {
+        EntityManagerFactory emf = JpaUtil.getInstance();
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction et = em.getTransaction();
+        
+        try {
+            
+            et.begin();
+            
+            em.persist(this);
+            
+            et.commit();
+            
+            System.out.println("Venda inserida.");
+            
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        
+    }
+    
+    public void atualizarVenda() {
+        EntityManagerFactory emf = JpaUtil.getInstance();
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction et = em.getTransaction();
+        
+        try {
+            
+            et.begin();
+            
+            em.merge(this);
+            
+            et.commit();
+            
+            System.out.println("Venda atualizada.");
+            
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+    
+     public void removerVenda() {
+        EntityManagerFactory emf = JpaUtil.getInstance();
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction et = em.getTransaction();
+        
+        try {
+            
+            et.begin();
+            
+            em.remove(this);
+            
+            et.commit();
+            
+            System.out.println("Venda removida.");
+            
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
     
     public Long getId() {

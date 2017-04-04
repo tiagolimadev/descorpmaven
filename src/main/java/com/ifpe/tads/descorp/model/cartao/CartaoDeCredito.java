@@ -5,11 +5,15 @@
  */
 package com.ifpe.tads.descorp.model.cartao;
 
+import com.ifpe.tads.descorp.jpa.JpaUtil;
 import com.ifpe.tads.descorp.model.usuario.Cliente;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
@@ -29,29 +33,118 @@ import javax.persistence.TemporalType;
 @Entity
 @Table(name = "TB_CARTAO_CREDITO")
 public class CartaoDeCredito implements Serializable {
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    
     @Column(name = "NUM_NUMERO")
     private Long numero;
+    
     @Column(name = "NUM_CVV")
     private Integer cvv;
+    
     @Column(name = "TXT_NOME")
     private String nome;
+    
     @Temporal(TemporalType.DATE)
     @Column(name = "DT_VALIDADE")
     private Date validade;
+    
     @Enumerated(EnumType.STRING)
     @Column(name = "TXT_BANDEIRA")
     private Bandeira bandeira;
+    
     @Column(name = "TXT_AGENCIA")
     private String agencia;
+    
     @Column(name = "TXT_CONTA")
     private String conta;
+    
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "ID_CLIENTE", referencedColumnName = "ID")
     private Cliente cliente;
 
+    public static CartaoDeCredito selecionarCartao(Long id){
+        EntityManagerFactory emf = JpaUtil.getInstance();
+        EntityManager em = emf.createEntityManager();
+        CartaoDeCredito cartao = null;
+        
+        try {
+            
+            cartao = em.find(CartaoDeCredito.class, id);
+            
+            if(cartao != null){
+                System.out.println("Cartão selecionado: "+ cartao.getId());
+            }
+            
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        
+        return cartao;
+    }
+    
+    public void inserirCartao() {
+        EntityManagerFactory emf = JpaUtil.getInstance();
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction et = em.getTransaction();
+
+        try {
+
+            et.begin();
+
+            em.persist(this);
+
+            et.commit();
+
+            System.out.println("Cartão inserido.");
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public void atualizarCartao() {
+        EntityManagerFactory emf = JpaUtil.getInstance();
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction et = em.getTransaction();
+
+        try {
+
+            et.begin();
+
+            em.merge(this);
+
+            et.commit();
+
+            System.out.println("Cartão atualizado.");
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+    
+    public void removerCartao() {
+        EntityManagerFactory emf = JpaUtil.getInstance();
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction et = em.getTransaction();
+
+        try {
+
+            et.begin();
+
+            em.remove(this);
+
+            et.commit();
+
+            System.out.println("Cartão removido.");
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+    
     public Long getId() {
         return id;
     }
