@@ -7,6 +7,7 @@ package com.ifpe.tads.descorp.jpa;
 
 import com.ifpe.tads.descorp.model.compra.Compra;
 import com.ifpe.tads.descorp.model.compra.ItemCompra;
+import com.ifpe.tads.descorp.model.fornecedor.Fornecedor;
 import com.ifpe.tads.descorp.model.produto.Produto;
 import java.util.ArrayList;
 import java.util.Date;
@@ -18,7 +19,7 @@ import java.util.Date;
 public class ComprasJPA {
     
     public static void main(String[] args) {
-        addProdutos();
+        mock();
         
         Compra compra = new Compra();
         
@@ -35,6 +36,8 @@ public class ComprasJPA {
         ic.setQuantidade(10);
         
         compra.getItensCompra().add(ic);
+        
+        compra.setFornecedor(Fornecedor.selecionarFornecedor(1L));
         
         compra.inserirCompra();
         
@@ -57,7 +60,7 @@ public class ComprasJPA {
         
     }
     
-    private static void addProdutos(){
+    private static void mock(){
         Produto prod = new Produto();
         prod.setDescricao("TESTE 1");
         prod.setNome("TESTE");
@@ -71,6 +74,13 @@ public class ComprasJPA {
         prod2.setPreco(10.0);
         
         prod2.inserirProduto();
+        
+        Fornecedor f = new Fornecedor();
+        
+        f.setDescricao("DESC");
+        f.setNome("NOME");
+        
+        f.inserirFornecedor();
     }
     
 }

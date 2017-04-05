@@ -5,10 +5,14 @@
  */
 package com.ifpe.tads.descorp.model.compra;
 
+import com.ifpe.tads.descorp.jpa.JpaUtil;
 import com.ifpe.tads.descorp.model.produto.Produto;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -49,6 +53,85 @@ public class ItemCompra implements Serializable {
 
     private void calcularSubTotal() {
         this.subTotal = this.precoUnitario * this.quantidade;
+    }
+    
+    public void inserirItemCompra() {
+        EntityManagerFactory emf = JpaUtil.getInstance();
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction et = em.getTransaction();
+        
+        try {
+            
+            et.begin();
+            
+            em.persist(this);
+            
+            et.commit();
+            
+            System.out.println("ItemCompra inserido.");
+            
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        
+    }
+    
+    public void atualizarItemCompra() {
+        EntityManagerFactory emf = JpaUtil.getInstance();
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction et = em.getTransaction();
+        
+        try {
+            
+            et.begin();
+            
+            em.merge(this);
+            
+            et.commit();
+            
+            System.out.println("ItemCompra atualizado.");
+            
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+    
+    public static ItemCompra selecionarItemCompra(Long id) {
+        EntityManagerFactory emf = JpaUtil.getInstance();
+        EntityManager em = emf.createEntityManager();
+        ItemCompra c = null;
+        
+        try {
+
+            c = em.find(ItemCompra.class, id);
+
+            System.out.println("ItemCompra selecionado: "+ c.getId());
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        
+        return c;
+    }
+    
+    public void removerItemCompra() {
+        EntityManagerFactory emf = JpaUtil.getInstance();
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction et = em.getTransaction();
+        
+        try {
+            
+            et.begin();
+            
+            em.remove(this);
+            
+            et.commit();
+            
+            System.out.println("ItemCompra removido.");
+            
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     public Long getId() {

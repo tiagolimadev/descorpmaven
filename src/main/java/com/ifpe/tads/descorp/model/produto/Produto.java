@@ -48,6 +48,9 @@ public class Produto implements Serializable {
 
     @Column(name = "NUM_PRECO")
     private Double preco;
+    
+    @Column(name = "NUM_QTDE_DISPONIVEL")
+    private Long qtdeDisponivel;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "TB_PRODUTOS_CATEGORIAS", joinColumns = {
@@ -208,6 +211,14 @@ public class Produto implements Serializable {
         this.itensVendas = itensVendas;
     }
 
+    public Long getQtdeDisponivel() {
+        return qtdeDisponivel;
+    }
+
+    public void setQtdeDisponivel(Long qtdeDisponivel) {
+        this.qtdeDisponivel = qtdeDisponivel;
+    }
+    
     @Override
     public int hashCode() {
         int hash = 0;

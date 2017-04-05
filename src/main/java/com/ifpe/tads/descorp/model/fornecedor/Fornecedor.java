@@ -5,11 +5,15 @@
  */
 package com.ifpe.tads.descorp.model.fornecedor;
 
+import com.ifpe.tads.descorp.jpa.JpaUtil;
 import com.ifpe.tads.descorp.model.endereco.Endereco;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -26,13 +30,95 @@ public class Fornecedor implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    
     @Column(name = "TXT_NOME")
     private String nome;
+    
     @Column(name = "TXT_DESCRICAO")
     private String descricao;
+    
     @ManyToMany(mappedBy = "fornecedores")
     private List<Endereco> enderecos;
 
+    public void inserirFornecedor() {
+        EntityManagerFactory emf = JpaUtil.getInstance();
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction et = em.getTransaction();
+        
+        try {
+            
+            et.begin();
+            
+            em.persist(this);
+            
+            et.commit();
+            
+            System.out.println("Fornecedor inserido.");
+            
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        
+    }
+    
+    public void atualizarFornecedor() {
+        EntityManagerFactory emf = JpaUtil.getInstance();
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction et = em.getTransaction();
+        
+        try {
+            
+            et.begin();
+            
+            em.merge(this);
+            
+            et.commit();
+            
+            System.out.println("Fornecedor atualizado.");
+            
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+    
+    public static Fornecedor selecionarFornecedor(Long id) {
+        EntityManagerFactory emf = JpaUtil.getInstance();
+        EntityManager em = emf.createEntityManager();
+        Fornecedor fornec = null;
+        
+        try {
+
+            fornec = em.find(Fornecedor.class, id);
+
+            System.out.println("Fornecedor selecionado: "+ fornec.getId());
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        
+        return fornec;
+    }
+    
+    public void removerFornecedor() {
+        EntityManagerFactory emf = JpaUtil.getInstance();
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction et = em.getTransaction();
+        
+        try {
+            
+            et.begin();
+            
+            em.remove(this);
+            
+            et.commit();
+            
+            System.out.println("Fornecedor removido.");
+            
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+    
     public Long getId() {
         return id;
     }
