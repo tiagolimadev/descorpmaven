@@ -5,6 +5,7 @@
  */
 package com.ifpe.tads.descorp.model.usuario;
 
+import com.ifpe.tads.descorp.jpa.JpaUtil;
 import com.ifpe.tads.descorp.model.endereco.Endereco;
 import java.io.Serializable;
 import java.util.Calendar;
@@ -17,6 +18,9 @@ import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorType;
 import javax.persistence.Entity;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
@@ -188,5 +192,70 @@ public class Usuario implements Serializable {
         }
         
         return false;
+    }
+    
+    public void inserirUsuario() {
+        EntityManagerFactory emf = JpaUtil.getInstance();
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction et = em.getTransaction();
+
+        try {
+
+            et.begin();
+
+            em.persist(this);
+
+            et.commit();
+
+            System.out.println("Usuário inserido.");
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+    }
+
+    public void atualizarusuario() {
+        EntityManagerFactory emf = JpaUtil.getInstance();
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction et = em.getTransaction();
+
+        try {
+
+            et.begin();
+
+            em.merge(this);
+
+            et.commit();
+
+            System.out.println("Usuário atualizado.");
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public void removerUsuario() {
+        EntityManagerFactory emf = JpaUtil.getInstance();
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction et = em.getTransaction();
+
+        try {
+
+            et.begin();
+
+            if (em.contains(this)) {
+                em.remove(this);
+            } else {
+                em.remove(em.merge(this));
+            }
+
+            et.commit();
+
+            System.out.println("Usuário removido.");
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 }

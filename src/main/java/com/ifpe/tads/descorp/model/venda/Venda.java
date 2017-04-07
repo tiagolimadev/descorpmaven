@@ -36,118 +36,122 @@ import javax.persistence.Transient;
 @Entity
 @Table(name = "TB_VENDA")
 public class Venda implements Serializable {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     @Transient
     private Double valorTotal;
-    
+
     @Temporal(TemporalType.DATE)
     @Column(name = "DT_DATA_VENDA", nullable = false)
     private Date dataVenda;
-    
+
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(name = "ID_OPERADOR", referencedColumnName = "ID")
     private Operador operador;
-    
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "ID_CLIENTE", referencedColumnName = "ID")
     private Cliente cliente;
-    
+
     @OneToMany(mappedBy = "venda", fetch = FetchType.LAZY,
             cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItemVenda> itensVenda;
 
     private void calcularValorTotal() {
-        double total = 0; 
-        for(ItemVenda item : this.itensVenda){
+        double total = 0;
+        for (ItemVenda item : this.itensVenda) {
             total += item.getSubTotal();
         }
         this.valorTotal = total;
     }
-    
-    public static Venda selecionarVenda(Long id){
+
+    public static Venda selecionarVenda(Long id) {
         EntityManagerFactory emf = JpaUtil.getInstance();
         EntityManager em = emf.createEntityManager();
         Venda venda = null;
-        
+
         try {
-            
+
             venda = em.find(Venda.class, id);
-            
-            if(venda != null){
-                System.out.println("Venda selecionada: "+ venda.getId());
+
+            if (venda != null) {
+                System.out.println("Venda selecionada: " + venda.getId());
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-        
+
         return venda;
     }
-    
+
     public void inserirVenda() {
         EntityManagerFactory emf = JpaUtil.getInstance();
         EntityManager em = emf.createEntityManager();
         EntityTransaction et = em.getTransaction();
-        
+
         try {
-            
+
             et.begin();
-            
+
             em.persist(this);
-            
+
             et.commit();
-            
+
             System.out.println("Venda inserida.");
-            
+
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-        
+
     }
-    
+
     public void atualizarVenda() {
         EntityManagerFactory emf = JpaUtil.getInstance();
         EntityManager em = emf.createEntityManager();
         EntityTransaction et = em.getTransaction();
-        
+
         try {
-            
+
             et.begin();
-            
+
             em.merge(this);
-            
+
             et.commit();
-            
+
             System.out.println("Venda atualizada.");
-            
+
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }
-    
-     public void removerVenda() {
+
+    public void removerVenda() {
         EntityManagerFactory emf = JpaUtil.getInstance();
         EntityManager em = emf.createEntityManager();
         EntityTransaction et = em.getTransaction();
-        
+
         try {
-            
+
             et.begin();
-            
-            em.remove(this);
-            
+
+            if (em.contains(this)) {
+                em.remove(this);
+            } else {
+                em.remove(em.merge(this));
+            }
+
             et.commit();
-            
+
             System.out.println("Venda removida.");
-            
+
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }
-    
+
     public Long getId() {
         return id;
     }
@@ -188,25 +192,33 @@ public class Venda implements Serializable {
     public void setCliente(Cliente cliente) {
         this.cliente = cliente;
     }
-    
+
+    public List<ItemVenda> getItensVenda() {
+        return itensVenda;
+    }
+
+    public void setItensVenda(List<ItemVenda> itensVenda) {
+        this.itensVenda = itensVenda;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
         hash += (id != null ? id.hashCode() : 0);
         return hash;
     }
-    
+
     @Override
     public boolean equals(Object object) {
         if (!(object instanceof Venda)) {
             return false;
         }
         Venda other = (Venda) object;
-        
+
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
-        
+
         return false;
     }
 }

@@ -150,7 +150,11 @@ public class Compra implements Serializable {
 
             et.begin();
 
-            em.remove(this);
+            if (em.contains(this)) {
+                em.remove(this);
+            } else {
+                em.remove(em.merge(this));
+            }
 
             et.commit();
 

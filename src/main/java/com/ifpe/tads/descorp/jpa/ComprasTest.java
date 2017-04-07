@@ -16,7 +16,7 @@ import java.util.Date;
  *
  * @author Eduardo
  */
-public class ComprasJPA {
+public class ComprasTest {
     
     public static void main(String[] args) {
         mock();
@@ -56,7 +56,17 @@ public class ComprasJPA {
         
         compra.atualizarCompra();
         
-        compra.removerCompra();
+        ItemCompra item = ItemCompra.selecionarItemCompra(1L);
+        
+        item.setQuantidade(25);
+        
+        item.atualizarItemCompra();
+        
+        ItemCompra item2 = ItemCompra.selecionarItemCompra(2L);
+        
+        item2.removerItemCompra();
+        
+        //compra.removerCompra();
         
     }
     
