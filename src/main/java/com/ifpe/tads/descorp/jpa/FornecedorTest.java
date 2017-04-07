@@ -8,7 +8,6 @@ package com.ifpe.tads.descorp.jpa;
 import com.ifpe.tads.descorp.model.endereco.Endereco;
 import com.ifpe.tads.descorp.model.fornecedor.Fornecedor;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  *
