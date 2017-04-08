@@ -10,7 +10,8 @@ import com.ifpe.tads.descorp.model.compra.ItemCompra;
 import com.ifpe.tads.descorp.model.fornecedor.Fornecedor;
 import com.ifpe.tads.descorp.model.produto.Produto;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 /**
  *
@@ -24,7 +25,7 @@ public class ComprasTest {
         Compra compra = new Compra();
         
         compra.setItensCompra(new ArrayList<ItemCompra>());
-        compra.setDataCompra(new Date());
+        compra.setDataCompra(new GregorianCalendar(2017, Calendar.APRIL, 8).getTime());
         
         ItemCompra ic = new ItemCompra();
         ic.setCompra(compra);

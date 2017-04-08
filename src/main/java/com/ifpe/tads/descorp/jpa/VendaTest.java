@@ -12,7 +12,9 @@ import com.ifpe.tads.descorp.model.usuario.TipoUsuario;
 import com.ifpe.tads.descorp.model.venda.ItemVenda;
 import com.ifpe.tads.descorp.model.venda.Venda;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 /**
  *
@@ -92,7 +94,7 @@ public class VendaTest {
         Cliente cliente = new Cliente();
         
         cliente.setCpf("123");
-        cliente.setDataNascimento(new Date(1994, 4, 1));
+        cliente.setDataNascimento(new GregorianCalendar(1992, Calendar.APRIL, 8).getTime());
         cliente.setEmail("EML");
         cliente.setLogin("sad");
         cliente.setSenha("123");
@@ -103,7 +105,7 @@ public class VendaTest {
         Operador operador = new Operador();
         
         operador.setCpf("123");
-        operador.setDataNascimento(new Date(1990, 2, 1));
+        operador.setDataNascimento(new GregorianCalendar(1993, Calendar.MAY, 15).getTime());
         operador.setEmail("EML");
         operador.setLogin("sad");
         operador.setSenha("123");

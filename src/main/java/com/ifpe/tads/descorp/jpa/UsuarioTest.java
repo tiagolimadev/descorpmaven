@@ -9,7 +9,9 @@ import com.ifpe.tads.descorp.model.usuario.Administrador;
 import com.ifpe.tads.descorp.model.usuario.Cliente;
 import com.ifpe.tads.descorp.model.usuario.Operador;
 import com.ifpe.tads.descorp.model.usuario.TipoUsuario;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 /**
  *
@@ -27,7 +29,7 @@ public class UsuarioTest {
         Cliente cliente = new Cliente();
         
         cliente.setCpf("123");
-        cliente.setDataNascimento(new Date(1990, 2, 1));
+        cliente.setDataNascimento(new GregorianCalendar(1990, Calendar.APRIL, 1).getTime());
         cliente.setEmail("EML");
         cliente.setLogin("sad");
         cliente.setSenha("123");
@@ -50,7 +52,7 @@ public class UsuarioTest {
         Operador operador = new Operador();
         
         operador.setCpf("123567");
-        operador.setDataNascimento(new Date(1983, 9, 14));
+        operador.setDataNascimento(new GregorianCalendar(1984, Calendar.JULY, 18).getTime());
         operador.setEmail("EMLAAA");
         operador.setLogin("AAA");
         operador.setSenha("123456");
@@ -73,7 +75,7 @@ public class UsuarioTest {
         Administrador administrador = new Administrador();
         
         administrador.setCpf("123567");
-        administrador.setDataNascimento(new Date(1983, 9, 14));
+        administrador.setDataNascimento(new GregorianCalendar(2000, Calendar.DECEMBER, 25).getTime());
         administrador.setEmail("EMLAAA");
         administrador.setLogin("AAA");
         administrador.setSenha("123456");
@@ -83,7 +85,7 @@ public class UsuarioTest {
         
         Administrador adm2 = Administrador.selecionarAdministrador(3L);
         
-        adm2.setDataNascimento(new Date(2001, 3, 27));
+        adm2.setDataNascimento(new GregorianCalendar(1994, Calendar.JANUARY, 27).getTime());
         
         adm2.atualizarusuario();
         
