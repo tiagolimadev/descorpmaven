@@ -41,7 +41,7 @@ public class UsuarioTest {
         
         cl2.setNome("JUVINALDO");
         
-        cl2.atualizarusuario();
+        cl2.atualizarUsuario();
         
         Cliente cl3 = Cliente.selecionarCliente(1L);
         
@@ -64,7 +64,7 @@ public class UsuarioTest {
         
         op2.setEmail("AMMMM@MMMMM.COM");
         
-        op2.atualizarusuario();
+        op2.atualizarUsuario();
         
         Operador op3 = Operador.selecionarOperador(2L);
         
@@ -87,7 +87,7 @@ public class UsuarioTest {
         
         adm2.setDataNascimento(new GregorianCalendar(1994, Calendar.JANUARY, 27).getTime());
         
-        adm2.atualizarusuario();
+        adm2.atualizarUsuario();
         
         Administrador adm3 = Administrador.selecionarAdministrador(3L);
         

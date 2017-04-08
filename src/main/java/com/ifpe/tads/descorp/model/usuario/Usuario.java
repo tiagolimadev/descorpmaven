@@ -215,7 +215,7 @@ public class Usuario implements Serializable {
 
     }
 
-    public void atualizarusuario() {
+    public void atualizarUsuario() {
         EntityManagerFactory emf = JpaUtil.getInstance();
         EntityManager em = emf.createEntityManager();
         EntityTransaction et = em.getTransaction();
