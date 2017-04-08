@@ -57,6 +57,17 @@ public class CartaoTest {
         cliente.setNome("Tiago Lima");
         cliente.setEnderecos(enderecos);
         cliente.inserirUsuario();
+        
+        
+        List<Usuario> usuarios = new ArrayList<Usuario>();
+        usuarios.add(cliente);
+        
+        endereco1.setUsuarios(usuarios);
+        endereco2.setUsuarios(usuarios);
+        
+        endereco1.atualizarEndereco();
+        endereco2.atualizarEndereco();
+        
     }
             
 }
