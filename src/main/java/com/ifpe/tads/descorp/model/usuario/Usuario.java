@@ -234,6 +234,21 @@ public class Usuario implements Serializable {
             System.out.println(e.getMessage());
         }
     }
+    
+     public static Usuario selecionarUsuario(Long id) {
+        EntityManagerFactory emf = JpaUtil.getInstance();
+        EntityManager em = emf.createEntityManager();
+        Usuario usuario = null;
+
+        try {
+            usuario = em.find(Usuario.class, id);
+            System.out.println("Usuario encontrado: " + usuario.getNome());
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+        return usuario;
+    }
 
     public void removerUsuario() {
         EntityManagerFactory emf = JpaUtil.getInstance();
