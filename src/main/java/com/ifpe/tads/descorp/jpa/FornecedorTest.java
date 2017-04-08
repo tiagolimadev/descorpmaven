@@ -34,15 +34,17 @@ public class FornecedorTest {
         
         forc.inserirFornecedor();
         
-        Fornecedor forc2 = Fornecedor.selecionarFornecedor(1L);
+        end.atualizarEndereco();
         
-        forc2.setNome("FORC");
+        forc = Fornecedor.selecionarFornecedor(1L);
         
-        forc2.atualizarFornecedor();
+        forc.setNome("FORC");
         
-        Fornecedor forc3 = Fornecedor.selecionarFornecedor(1L);
+        forc.atualizarFornecedor();
         
-        //forc3.removerFornecedor();
+        forc = Fornecedor.selecionarFornecedor(1L);
+        
+        //forc.removerFornecedor();
         
     }
     

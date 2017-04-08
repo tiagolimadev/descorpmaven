@@ -10,7 +10,6 @@ import com.ifpe.tads.descorp.model.usuario.Cliente;
 import com.ifpe.tads.descorp.model.usuario.Operador;
 import com.ifpe.tads.descorp.model.usuario.TipoUsuario;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 
 /**
@@ -45,7 +44,7 @@ public class UsuarioTest {
         
         Cliente cl3 = Cliente.selecionarCliente(1L);
         
-       // cl3.removerUsuario();
+       cl3.removerUsuario();
     }
     
     private static void testeOperador(){
@@ -68,7 +67,7 @@ public class UsuarioTest {
         
         Operador op3 = Operador.selecionarOperador(2L);
         
-       // op3.removerUsuario();
+        op3.removerUsuario();
     }
     
     private static void testeAdministrador(){
@@ -91,7 +90,7 @@ public class UsuarioTest {
         
         Administrador adm3 = Administrador.selecionarAdministrador(3L);
         
-       // adm3.removerUsuario();
+        adm3.removerUsuario();
     }
     
 }

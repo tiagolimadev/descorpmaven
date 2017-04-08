@@ -72,7 +72,7 @@ public class VendaTest {
         
         item1.removerItemVenda();
         
-        venda.removerVenda();
+        //venda.removerVenda();
         
     }
     

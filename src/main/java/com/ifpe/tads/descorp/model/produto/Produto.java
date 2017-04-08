@@ -48,7 +48,7 @@ public class Produto implements Serializable {
 
     @Column(name = "NUM_PRECO")
     private Double preco;
-    
+
     @Column(name = "NUM_QTDE_DISPONIVEL")
     private Long qtdeDisponivel;
 
@@ -126,7 +126,7 @@ public class Produto implements Serializable {
             System.out.println(e.getMessage());
         }
     }
-    
+
     public void removerProduto() {
         EntityManagerFactory emf = JpaUtil.getInstance();
         EntityManager em = emf.createEntityManager();
@@ -136,7 +136,11 @@ public class Produto implements Serializable {
 
             et.begin();
 
-            em.remove(this);
+            if (em.contains(this)) {
+                em.remove(this);
+            } else {
+                em.remove(em.merge(this));
+            }
 
             et.commit();
 
@@ -146,7 +150,7 @@ public class Produto implements Serializable {
             System.out.println(e.getMessage());
         }
     }
-    
+
     public Long getId() {
         return id;
     }
@@ -218,7 +222,7 @@ public class Produto implements Serializable {
     public void setQtdeDisponivel(Long qtdeDisponivel) {
         this.qtdeDisponivel = qtdeDisponivel;
     }
-    
+
     @Override
     public int hashCode() {
         int hash = 0;
