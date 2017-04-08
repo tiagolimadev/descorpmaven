@@ -24,10 +24,7 @@ public class CartaoTest {
         
         CartaoDeCredito cartao = new CartaoDeCredito();
         cartao.setCliente((Cliente) Usuario.selecionarUsuario(1L));
-        cartao.setCvv(777);
-        cartao.setAgencia("1.234-5");
         cartao.setBandeira(Bandeira.VISA);
-        cartao.setConta("12.345-6");
         
         cartao.inserirCartao();
         

@@ -67,7 +67,7 @@ public class ComprasTest {
         
         item2.removerItemCompra();
         
-        //compra.removerCompra();
+        compra.removerCompra();
         
     }
     

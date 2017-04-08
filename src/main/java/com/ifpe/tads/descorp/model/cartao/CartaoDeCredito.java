@@ -38,11 +38,8 @@ public class CartaoDeCredito implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @Column(name = "NUM_NUMERO")
-    private Long numero;
-    
-    @Column(name = "NUM_CVV")
-    private Integer cvv;
+    @Column(name = "TXT_NUMERO")
+    private String numero;
     
     @Column(name = "TXT_NOME")
     private String nome;
@@ -54,12 +51,6 @@ public class CartaoDeCredito implements Serializable {
     @Enumerated(EnumType.STRING)
     @Column(name = "TXT_BANDEIRA")
     private Bandeira bandeira;
-    
-    @Column(name = "TXT_AGENCIA")
-    private String agencia;
-    
-    @Column(name = "TXT_CONTA")
-    private String conta;
     
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "ID_CLIENTE", referencedColumnName = "ID")
@@ -134,7 +125,11 @@ public class CartaoDeCredito implements Serializable {
 
             et.begin();
 
-            em.remove(this);
+            if (em.contains(this)) {
+                em.remove(this);
+            } else {
+                em.remove(em.merge(this));
+            }
 
             et.commit();
 
@@ -153,20 +148,12 @@ public class CartaoDeCredito implements Serializable {
         this.id = id;
     }
 
-    public Long getNumero() {
+    public String getNumero() {
         return numero;
     }
 
-    public void setNumero(Long numero) {
+    public void setNumero(String numero) {
         this.numero = numero;
-    }
-
-    public Integer getCvv() {
-        return cvv;
-    }
-
-    public void setCvv(Integer cvv) {
-        this.cvv = cvv;
     }
 
     public String getNome() {
@@ -191,22 +178,6 @@ public class CartaoDeCredito implements Serializable {
 
     public void setBandeira(Bandeira bandeira) {
         this.bandeira = bandeira;
-    }
-
-    public String getAgencia() {
-        return agencia;
-    }
-
-    public void setAgencia(String agencia) {
-        this.agencia = agencia;
-    }
-
-    public String getConta() {
-        return conta;
-    }
-
-    public void setConta(String conta) {
-        this.conta = conta;
     }
 
     public Cliente getCliente() {
