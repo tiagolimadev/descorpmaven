@@ -5,6 +5,7 @@
  */
 package com.ifpe.tads.descorp.model.venda;
 
+import com.ifpe.tads.descorp.entrega.Entrega;
 import com.ifpe.tads.descorp.jpa.JpaUtil;
 import com.ifpe.tads.descorp.model.usuario.Cliente;
 import com.ifpe.tads.descorp.model.usuario.Operador;
@@ -59,6 +60,10 @@ public class Venda implements Serializable {
     @OneToMany(mappedBy = "venda", fetch = FetchType.LAZY,
             cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItemVenda> itensVenda;
+    
+    @OneToMany(mappedBy = "venda", fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Entrega> entregas;
 
     private void calcularValorTotal() {
         double total = 0;
@@ -199,6 +204,14 @@ public class Venda implements Serializable {
 
     public void setItensVenda(List<ItemVenda> itensVenda) {
         this.itensVenda = itensVenda;
+    }
+
+    public List<Entrega> getEntregas() {
+        return entregas;
+    }
+
+    public void setEntregas(List<Entrega> entregas) {
+        this.entregas = entregas;
     }
 
     @Override

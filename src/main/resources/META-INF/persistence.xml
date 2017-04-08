@@ -10,11 +10,13 @@
     <class>com.ifpe.tads.descorp.model.produto.Categoria</class>
     <class>com.ifpe.tads.descorp.model.produto.Produto</class>
     <class>com.ifpe.tads.descorp.model.usuario.Administrador</class>
+    <class>com.ifpe.tads.descorp.model.usuario.Entregador</class>
     <class>com.ifpe.tads.descorp.model.usuario.Cliente</class>
     <class>com.ifpe.tads.descorp.model.usuario.Operador</class>
     <class>com.ifpe.tads.descorp.model.usuario.Usuario</class>
     <class>com.ifpe.tads.descorp.model.venda.ItemVenda</class>
     <class>com.ifpe.tads.descorp.model.venda.Venda</class>
+    <class>com.ifpe.tads.descorp.entrega.Entrega</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/descorp?zeroDateTimeBehavior=convertToNull&amp;useLegacyDatetimeCode=false&amp;serverTimezone=UTC"/>
       <property name="javax.persistence.jdbc.user" value="root"/>

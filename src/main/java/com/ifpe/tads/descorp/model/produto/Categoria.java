@@ -5,10 +5,14 @@
  */
 package com.ifpe.tads.descorp.model.produto;
 
+import com.ifpe.tads.descorp.jpa.JpaUtil;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -29,6 +33,73 @@ public class Categoria implements Serializable {
     private String nome;
     @ManyToMany(mappedBy = "categorias")
     private List<Produto> produtos;
+    
+    public void inserirCategoria() {
+        EntityManagerFactory emf = JpaUtil.getInstance();
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction et = em.getTransaction();
+
+        try {
+            et.begin();
+            em.persist(this);
+            et.commit();
+            System.out.println("Categoria inserida.");
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+    
+    public void atualizarCategoria() {
+        EntityManagerFactory emf = JpaUtil.getInstance();
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction et = em.getTransaction();
+
+        try {
+            et.begin();
+            em.merge(this);
+            et.commit();
+            System.out.println("Categoria atualizada.");
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+    
+    public void removerCategoria() {
+        EntityManagerFactory emf = JpaUtil.getInstance();
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction et = em.getTransaction();
+
+        try {
+
+            et.begin();
+            if (em.contains(this)) {
+                em.remove(this);
+            } else {
+                em.remove(em.merge(this));
+            }
+            et.commit();
+            System.out.println("Venda removida.");
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+    
+    public static Categoria selecionarCategoria(Long id) {
+        EntityManagerFactory emf = JpaUtil.getInstance();
+        EntityManager em = emf.createEntityManager();
+        Categoria categoria = null;
+
+        try {
+            categoria = em.find(Categoria.class, id);
+            if (categoria != null) {
+                System.out.println("Categoria selecionada: " + categoria.getNome());
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+        return categoria;
+    }
 
     public Long getId() {
         return id;
