@@ -8,6 +8,7 @@ package com.ifpe.tads.descorp.model.produto;
 import com.ifpe.tads.descorp.jpa.JpaUtil;
 import java.io.Serializable;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
@@ -18,6 +19,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 /**
  *
@@ -29,9 +33,12 @@ public class Categoria implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @NotBlank
+    @Size(max = 20)
     @Column(name = "TXT_NOME")
     private String nome;
-    @ManyToMany(mappedBy = "categorias")
+    @Valid
+    @ManyToMany(mappedBy = "categorias", cascade = CascadeType.PERSIST)
     private List<Produto> produtos;
     
     public void inserirCategoria() {

@@ -24,6 +24,8 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 /**
  *
@@ -36,13 +38,19 @@ public class Produto implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    
+    @NotBlank
+    @Size(max = 20)
     @Column(name = "TXT_CODIGO")
     private String codigo;
 
+    @NotBlank
+    @Size(max = 50)
     @Column(name = "TXT_NOME")
     private String nome;
 
+    @NotBlank
+    @Size(max = 500)
     @Column(name = "TXT_DESCRICAO")
     private String descricao;
 
