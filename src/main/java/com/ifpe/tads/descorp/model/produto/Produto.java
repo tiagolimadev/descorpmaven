@@ -1,20 +1,11 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.ifpe.tads.descorp.model.produto;
 
-import com.ifpe.tads.descorp.jpa.JpaUtil;
 import com.ifpe.tads.descorp.model.compra.ItemCompra;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -75,90 +66,7 @@ public class Produto implements Serializable {
     @OneToMany(mappedBy = "produto", fetch = FetchType.LAZY,
             cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItemCompra> itensVendas;
-
-    public static Produto selecionarProduto(Long id) {
-        EntityManagerFactory emf = JpaUtil.getInstance();
-        EntityManager em = emf.createEntityManager();
-        Produto prod = null;
-
-        try {
-            prod = em.find(Produto.class, id);
-
-            if (prod != null) {
-                System.out.println("Produto selecionado: " + prod.getId());
-            }
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-
-        return prod;
-
-    }
-
-    public void inserirProduto() {
-        EntityManagerFactory emf = JpaUtil.getInstance();
-        EntityManager em = emf.createEntityManager();
-        EntityTransaction et = em.getTransaction();
-
-        try {
-
-            et.begin();
-
-            em.persist(this);
-
-            et.commit();
-
-            System.out.println("Produto inserido.");
-
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
-    public void atualizarProduto() {
-        EntityManagerFactory emf = JpaUtil.getInstance();
-        EntityManager em = emf.createEntityManager();
-        EntityTransaction et = em.getTransaction();
-
-        try {
-
-            et.begin();
-
-            em.merge(this);
-
-            et.commit();
-
-            System.out.println("Produto atualizado.");
-
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
-    public void removerProduto() {
-        EntityManagerFactory emf = JpaUtil.getInstance();
-        EntityManager em = emf.createEntityManager();
-        EntityTransaction et = em.getTransaction();
-
-        try {
-
-            et.begin();
-
-            if (em.contains(this)) {
-                em.remove(this);
-            } else {
-                em.remove(em.merge(this));
-            }
-
-            et.commit();
-
-            System.out.println("Produto removido.");
-
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
+    
     public Long getId() {
         return id;
     }
@@ -250,6 +158,11 @@ public class Produto implements Serializable {
         }
 
         return false;
+    }
+    
+    @Override
+    public String toString() {
+        return "com.ifpe.tads.descorp.model.produto.Produto[ id=" + id + ":" + nome + " ]";
     }
 
 }

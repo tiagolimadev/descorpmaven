@@ -1,20 +1,11 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.ifpe.tads.descorp.entrega;
 
-import com.ifpe.tads.descorp.jpa.JpaUtil;
 import com.ifpe.tads.descorp.model.usuario.Entregador;
 import com.ifpe.tads.descorp.model.venda.Venda;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
@@ -62,71 +53,6 @@ public class Entrega implements Serializable {
     @JoinColumn(name = "ID_ENTREGADOR", referencedColumnName = "ID")
     private Entregador entregador;
     
-    public void inserirEntrega() {
-        EntityManagerFactory emf = JpaUtil.getInstance();
-        EntityManager em = emf.createEntityManager();
-        EntityTransaction et = em.getTransaction();
-
-        try {
-            et.begin();
-            em.persist(this);
-            et.commit();
-            System.out.println("Entrega inserida.");
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-    }
-    
-    public void removerEntrega() {
-        EntityManagerFactory emf = JpaUtil.getInstance();
-        EntityManager em = emf.createEntityManager();
-        EntityTransaction et = em.getTransaction();
-
-        try {
-            et.begin();
-            if (em.contains(this)) {
-                em.remove(this);
-            } else {
-                em.remove(em.merge(this));
-            }
-            et.commit();
-            System.out.println("Venda removida.");
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-    }
-    
-    public static Entrega selecionarEntrega(Long id) {
-        EntityManagerFactory emf = JpaUtil.getInstance();
-        EntityManager em = emf.createEntityManager();
-        Entrega entrega = null;
-
-        try {
-            entrega = em.find(Entrega.class, id);
-            if (entrega != null) {
-                System.out.println("Entrega selecionada: " + entrega.getId());
-            }
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-        return entrega;
-    }
-    
-    public void atualizarEntrega() {
-        EntityManagerFactory emf = JpaUtil.getInstance();
-        EntityManager em = emf.createEntityManager();
-        EntityTransaction et = em.getTransaction();
-
-        try {
-            et.begin();
-            em.merge(this);
-            et.commit();
-            System.out.println("Entrega atualizada.");
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
     public StatusEntrega getStatusEntrega() {
         return statusEntrega;
     }
@@ -159,4 +85,29 @@ public class Entrega implements Serializable {
         this.entregador = entregador;
     }
     
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (id != null ? id.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (!(object instanceof Entrega)) {
+            return false;
+        }
+        Entrega other = (Entrega) object;
+
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+            return false;
+        }
+
+        return false;
+    }
+    
+    @Override
+    public String toString() {
+        return "com.ifpe.tads.descorp.entrega.Entrega[ id=" + id + ":" + statusEntrega + " ]";
+    }
 }

@@ -1,18 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.ifpe.tads.descorp.model.compra;
 
-import com.ifpe.tads.descorp.jpa.JpaUtil;
 import com.ifpe.tads.descorp.model.produto.Produto;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -55,89 +46,6 @@ public class ItemCompra implements Serializable {
         this.subTotal = this.precoUnitario * this.quantidade;
     }
     
-    public void inserirItemCompra() {
-        EntityManagerFactory emf = JpaUtil.getInstance();
-        EntityManager em = emf.createEntityManager();
-        EntityTransaction et = em.getTransaction();
-        
-        try {
-            
-            et.begin();
-            
-            em.persist(this);
-            
-            et.commit();
-            
-            System.out.println("ItemCompra inserido.");
-            
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-        
-    }
-    
-    public void atualizarItemCompra() {
-        EntityManagerFactory emf = JpaUtil.getInstance();
-        EntityManager em = emf.createEntityManager();
-        EntityTransaction et = em.getTransaction();
-        
-        try {
-            
-            et.begin();
-            
-            em.merge(this);
-            
-            et.commit();
-            
-            System.out.println("ItemCompra atualizado.");
-            
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-    }
-    
-    public static ItemCompra selecionarItemCompra(Long id) {
-        EntityManagerFactory emf = JpaUtil.getInstance();
-        EntityManager em = emf.createEntityManager();
-        ItemCompra c = null;
-        
-        try {
-
-            c = em.find(ItemCompra.class, id);
-
-            System.out.println("ItemCompra selecionado: "+ c.getId());
-
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-        
-        return c;
-    }
-    
-    public void removerItemCompra() {
-        EntityManagerFactory emf = JpaUtil.getInstance();
-        EntityManager em = emf.createEntityManager();
-        EntityTransaction et = em.getTransaction();
-        
-        try {
-            
-            et.begin();
-            
-            if (em.contains(this)) {
-                em.remove(this);
-            } else {
-                em.remove(em.merge(this));
-            }
-            
-            et.commit();
-            
-            System.out.println("ItemCompra removido.");
-            
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
     public Long getId() {
         return id;
     }
@@ -207,4 +115,10 @@ public class ItemCompra implements Serializable {
 
         return false;
     }
+    
+    @Override
+    public String toString() {
+        return "com.ifpe.tads.descorp.model.compra.ItemCompra[ id=" + id + ":" + Double.toString(precoUnitario) + " ]";
+    }
+    
 }

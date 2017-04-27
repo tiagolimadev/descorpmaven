@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.ifpe.tads.descorp.model.usuario;
 
 import com.ifpe.tads.descorp.entrega.Entrega;
@@ -36,6 +31,11 @@ public class Entregador extends Usuario implements Serializable {
 
     public void setEntregas(List<Entrega> entregas) {
         this.entregas = entregas;
+    }
+    
+    @Override
+    public String toString() {
+        return "com.ifpe.tads.descorp.model.usuario.Entregador[ id=" + super.getId() + ":" + super.getTipo() + " ]";
     }
     
 }

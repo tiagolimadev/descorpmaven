@@ -1,20 +1,11 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.ifpe.tads.descorp.model.endereco;
 
-import com.ifpe.tads.descorp.jpa.JpaUtil;
 import com.ifpe.tads.descorp.model.fornecedor.Fornecedor;
 import com.ifpe.tads.descorp.model.usuario.Usuario;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -26,7 +17,7 @@ import javax.persistence.Table;
 
 /**
  *
- * @author Tiago Lima
+ * @author Tiago Lima <tiagolimadev@outlook.com>
  */
 @Entity
 @Table(name = "TB_ENDERECO")
@@ -71,70 +62,6 @@ public class Endereco implements Serializable {
                 @JoinColumn(name = "ID_USUARIO")})
     private List<Usuario> usuarios;
     
-    public void inserirEndereco() {
-        EntityManagerFactory emf = JpaUtil.getInstance();
-        EntityManager em = emf.createEntityManager();
-        EntityTransaction et = em.getTransaction();
-
-        try {
-            et.begin();
-            em.persist(this);
-            et.commit();
-            System.out.println("Endereço inserido.");
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-    }
-    
-    public void atualizarEndereco() {
-        EntityManagerFactory emf = JpaUtil.getInstance();
-        EntityManager em = emf.createEntityManager();
-        EntityTransaction et = em.getTransaction();
-
-        try {
-            et.begin();
-            em.merge(this);
-            et.commit();
-            System.out.println("Endereço atualizado.");
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-    }
-    
-    public static Endereco selecionarEndereco(Long id) {
-        EntityManagerFactory emf = JpaUtil.getInstance();
-        EntityManager em = emf.createEntityManager();
-        Endereco endereco = null;
-
-        try {
-            endereco = em.find(Endereco.class, id);
-            System.out.println("Endereco encontrado: " + endereco.getLogradouro());
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-
-        return endereco;
-    }
-    
-    public void removerEndereco() {
-        EntityManagerFactory emf = JpaUtil.getInstance();
-        EntityManager em = emf.createEntityManager();
-        EntityTransaction et = em.getTransaction();
-
-        try {
-            et.begin();
-            if (em.contains(this)) {
-                em.remove(this);
-            } else {
-                em.remove(em.merge(this));
-            }
-            et.commit();
-            System.out.println("Endereço removido.");
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
     public Long getId() {
         return id;
     }
@@ -235,4 +162,10 @@ public class Endereco implements Serializable {
         
         return false;
     }
+    
+    @Override
+    public String toString() {
+        return "com.ifpe.tads.descorp.model.endereco.Endereco[ id=" + id + ":" + logradouro + " ]";
+    }
+    
 }

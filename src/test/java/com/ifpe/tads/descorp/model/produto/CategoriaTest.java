@@ -9,6 +9,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
+import javax.persistence.TypedQuery;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -72,6 +73,7 @@ public class CategoriaTest {
     
     @Test
     public void t01_criarCategoriaValida() {
+        logger.info("Executando t01: inserirCategoriaValida");
         List<Produto> produtos = new ArrayList();
         Categoria categoria = new Categoria();
         categoria.setNome("Celulares");
@@ -97,8 +99,37 @@ public class CategoriaTest {
         em.persist(categoria);
         em.flush();
         assertNotNull(produto1.getId());
+        logger.log(Level.INFO, "Produto {0} incluído com sucesso.", produto1);
         assertNotNull(produto2.getId());
+        logger.log(Level.INFO, "Produto {0} incluído com sucesso.", produto2);
         assertNotNull(categoria.getId());
+        logger.log(Level.INFO, "Categoria {0} incluída com sucesso.", categoria);
+    }
+    
+    @Test
+    public void t02_atualizarCategoriaValida()
+    {
+        logger.info("Executando t02: atualizarCategoriaValida");
+        TypedQuery<Categoria> query = em.createNamedQuery("Categoria.PorNome", Categoria.class);
+        query.setParameter("nome", "Bebidas");
+        Categoria categoria = query.getSingleResult();
+        assertNotNull(categoria);
+        categoria.setNome("Bebidas Alcoólicas");
+        em.flush();
+        assertEquals(0, query.getResultList().size());
+    }
+    
+    @Test
+    public void t03_removerCategoriaValida()
+    {
+        logger.info("Executando t03: removerCategoriaValida");
+        TypedQuery<Categoria> query = em.createNamedQuery("Categoria.PorNome", Categoria.class);
+        query.setParameter("nome", "Bebidas Alcoólicas");
+        Categoria categoria = query.getSingleResult();
+        assertNotNull(categoria);
+        em.remove(categoria);
+        em.flush();
+        assertEquals(0, query.getResultList().size());
     }
     
 }

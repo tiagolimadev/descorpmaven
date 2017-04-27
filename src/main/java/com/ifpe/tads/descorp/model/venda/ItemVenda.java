@@ -1,18 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.ifpe.tads.descorp.model.venda;
 
-import com.ifpe.tads.descorp.jpa.JpaUtil;
 import com.ifpe.tads.descorp.model.produto.Produto;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -24,7 +15,7 @@ import javax.persistence.Transient;
 
 /**
  *
- * @author Tiago Lima
+ * @author Tiago Lima <tiagolimadev@outlook.com>
  */
 @Entity
 @Table(name = "TB_ITEM_VENDA")
@@ -53,89 +44,6 @@ public class ItemVenda implements Serializable {
 
     private void calcularSubTotal(){
         this.subTotal = this.precoUnitario * this.quantidade;
-    }
-    
-    public void inserirItemVenda() {
-        EntityManagerFactory emf = JpaUtil.getInstance();
-        EntityManager em = emf.createEntityManager();
-        EntityTransaction et = em.getTransaction();
-        
-        try {
-            
-            et.begin();
-            
-            em.persist(this);
-            
-            et.commit();
-            
-            System.out.println("ItemVenda inserido.");
-            
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-        
-    }
-    
-    public void atualizarItemVenda() {
-        EntityManagerFactory emf = JpaUtil.getInstance();
-        EntityManager em = emf.createEntityManager();
-        EntityTransaction et = em.getTransaction();
-        
-        try {
-            
-            et.begin();
-            
-            em.merge(this);
-            
-            et.commit();
-            
-            System.out.println("ItemVenda atualizado.");
-            
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-    }
-    
-    public static ItemVenda selecionarItemVenda(Long id) {
-        EntityManagerFactory emf = JpaUtil.getInstance();
-        EntityManager em = emf.createEntityManager();
-        ItemVenda v = null;
-        
-        try {
-
-            v = em.find(ItemVenda.class, id);
-
-            System.out.println("Compra selecionado: "+ v.getId());
-
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-        
-        return v;
-    }
-    
-    public void removerItemVenda() {
-        EntityManagerFactory emf = JpaUtil.getInstance();
-        EntityManager em = emf.createEntityManager();
-        EntityTransaction et = em.getTransaction();
-        
-        try {
-            
-            et.begin();
-            
-            if (em.contains(this)) {
-                em.remove(this);
-            } else {
-                em.remove(em.merge(this));
-            }
-            
-            et.commit();
-            
-            System.out.println("ItemVenda removido.");
-            
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
     }
     
     public Long getId() {
@@ -207,4 +115,10 @@ public class ItemVenda implements Serializable {
         
         return false;
     }
+    
+    @Override
+    public String toString() {
+        return "com.ifpe.tads.descorp.model.venda.ItemVenda[ id=" + id + ":" + Double.toString(precoUnitario) + " ]";
+    }
+    
 }

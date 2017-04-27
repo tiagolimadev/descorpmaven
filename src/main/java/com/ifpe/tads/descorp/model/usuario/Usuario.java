@@ -1,11 +1,5 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.ifpe.tads.descorp.model.usuario;
 
-import com.ifpe.tads.descorp.jpa.JpaUtil;
 import com.ifpe.tads.descorp.model.endereco.Endereco;
 import java.io.Serializable;
 import java.util.Calendar;
@@ -18,9 +12,6 @@ import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorType;
 import javax.persistence.Entity;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
@@ -36,7 +27,7 @@ import javax.persistence.Transient;
 
 /**
  *
- * @author Tiago Lima
+ * @author Tiago Lima <tiagolimadev@outlook.com>
  */
 @Entity
 @Table(name = "TB_USUARIO")
@@ -194,83 +185,9 @@ public class Usuario implements Serializable {
         return false;
     }
     
-    public void inserirUsuario() {
-        EntityManagerFactory emf = JpaUtil.getInstance();
-        EntityManager em = emf.createEntityManager();
-        EntityTransaction et = em.getTransaction();
-
-        try {
-
-            et.begin();
-
-            em.persist(this);
-
-            et.commit();
-
-            System.out.println("Usuário inserido.");
-
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-
-    }
-
-    public void atualizarUsuario() {
-        EntityManagerFactory emf = JpaUtil.getInstance();
-        EntityManager em = emf.createEntityManager();
-        EntityTransaction et = em.getTransaction();
-
-        try {
-
-            et.begin();
-
-            em.merge(this);
-
-            et.commit();
-
-            System.out.println("Usuário atualizado.");
-
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
+    @Override
+    public String toString() {
+        return "com.ifpe.tads.descorp.model.usuario.Usuario[ id=" + id + ":" + tipo + " ]";
     }
     
-     public static Usuario selecionarUsuario(Long id) {
-        EntityManagerFactory emf = JpaUtil.getInstance();
-        EntityManager em = emf.createEntityManager();
-        Usuario usuario = null;
-
-        try {
-            usuario = em.find(Usuario.class, id);
-            System.out.println("Usuario encontrado: " + usuario.getNome());
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-
-        return usuario;
-    }
-
-    public void removerUsuario() {
-        EntityManagerFactory emf = JpaUtil.getInstance();
-        EntityManager em = emf.createEntityManager();
-        EntityTransaction et = em.getTransaction();
-
-        try {
-
-            et.begin();
-
-            if (em.contains(this)) {
-                em.remove(this);
-            } else {
-                em.remove(em.merge(this));
-            }
-
-            et.commit();
-
-            System.out.println("Usuário removido.");
-
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-    }
 }

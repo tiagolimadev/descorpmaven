@@ -1,19 +1,10 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.ifpe.tads.descorp.model.cartao;
 
-import com.ifpe.tads.descorp.jpa.JpaUtil;
 import com.ifpe.tads.descorp.model.usuario.Cliente;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
@@ -28,7 +19,7 @@ import javax.persistence.TemporalType;
 
 /**
  *
- * @author Tiago Lima
+ * @author Tiago Lima <tiagolimadev@outlook.com>
  */
 @Entity
 @Table(name = "TB_CARTAO_CREDITO")
@@ -55,90 +46,6 @@ public class CartaoDeCredito implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "ID_CLIENTE", referencedColumnName = "ID")
     private Cliente cliente;
-
-    public static CartaoDeCredito selecionarCartao(Long id){
-        EntityManagerFactory emf = JpaUtil.getInstance();
-        EntityManager em = emf.createEntityManager();
-        CartaoDeCredito cartao = null;
-        
-        try {
-            
-            cartao = em.find(CartaoDeCredito.class, id);
-            
-            if(cartao != null){
-                System.out.println("Cartão selecionado: "+ cartao.getId());
-            }
-            
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-        
-        return cartao;
-    }
-    
-    public void inserirCartao() {
-        EntityManagerFactory emf = JpaUtil.getInstance();
-        EntityManager em = emf.createEntityManager();
-        EntityTransaction et = em.getTransaction();
-
-        try {
-
-            et.begin();
-
-            em.persist(this);
-
-            et.commit();
-
-            System.out.println("Cartão inserido.");
-
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
-    public void atualizarCartao() {
-        EntityManagerFactory emf = JpaUtil.getInstance();
-        EntityManager em = emf.createEntityManager();
-        EntityTransaction et = em.getTransaction();
-
-        try {
-
-            et.begin();
-
-            em.merge(this);
-
-            et.commit();
-
-            System.out.println("Cartão atualizado.");
-
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-    }
-    
-    public void removerCartao() {
-        EntityManagerFactory emf = JpaUtil.getInstance();
-        EntityManager em = emf.createEntityManager();
-        EntityTransaction et = em.getTransaction();
-
-        try {
-
-            et.begin();
-
-            if (em.contains(this)) {
-                em.remove(this);
-            } else {
-                em.remove(em.merge(this));
-            }
-
-            et.commit();
-
-            System.out.println("Cartão removido.");
-
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-    }
     
     public Long getId() {
         return id;
@@ -208,4 +115,10 @@ public class CartaoDeCredito implements Serializable {
         
         return false;
     }
+    
+    @Override
+    public String toString() {
+        return "com.ifpe.tads.descorp.model.cartao.CartaoDeCredito[ id=" + id + ":" + bandeira + " ]";
+    }
+    
 }

@@ -1,23 +1,15 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.ifpe.tads.descorp.model.compra;
 
-import com.ifpe.tads.descorp.jpa.JpaUtil;
 import com.ifpe.tads.descorp.model.fornecedor.Fornecedor;
-import com.ifpe.tads.descorp.model.produto.Produto;
 import com.ifpe.tads.descorp.model.usuario.Administrador;
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -32,7 +24,7 @@ import javax.persistence.Transient;
 
 /**
  *
- * @author Tiago Lima
+ * @author Tiago Lima <tiagolimadev@outlook.com>
  */
 @Entity
 @Table(name = "TB_COMPRA")
@@ -72,99 +64,7 @@ public class Compra implements Serializable {
     public void finalizarCompras() {
         //TO DO
     }
-
-    private void atualizarEstoque() {
-        for (ItemCompra itemCompra : itensCompra) {
-            Produto p = itemCompra.getProduto();
-            Long disponivel = p.getQtdeDisponivel() == null ? 0 : p.getQtdeDisponivel();
-            p.setQtdeDisponivel(disponivel + itemCompra.getQuantidade());
-            p.atualizarProduto();
-        }
-    }
-
-    public void inserirCompra() {
-        EntityManagerFactory emf = JpaUtil.getInstance();
-        EntityManager em = emf.createEntityManager();
-        EntityTransaction et = em.getTransaction();
-
-        try {
-
-            et.begin();
-
-            em.persist(this);
-
-            et.commit();
-
-            System.out.println("Compra inserida.");
-
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-
-    }
-
-    public void atualizarCompra() {
-        EntityManagerFactory emf = JpaUtil.getInstance();
-        EntityManager em = emf.createEntityManager();
-        EntityTransaction et = em.getTransaction();
-
-        try {
-
-            et.begin();
-
-            em.merge(this);
-
-            et.commit();
-
-            System.out.println("Compra atualizada.");
-
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
-    public static Compra selecionarCompra(Long id) {
-        EntityManagerFactory emf = JpaUtil.getInstance();
-        EntityManager em = emf.createEntityManager();
-        Compra c = null;
-
-        try {
-
-            c = em.find(Compra.class, id);
-
-            System.out.println("Compra selecionada: " + c.getId());
-
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-
-        return c;
-    }
-
-    public void removerCompra() {
-        EntityManagerFactory emf = JpaUtil.getInstance();
-        EntityManager em = emf.createEntityManager();
-        EntityTransaction et = em.getTransaction();
-
-        try {
-
-            et.begin();
-
-            if (em.contains(this)) {
-                em.remove(this);
-            } else {
-                em.remove(em.merge(this));
-            }
-
-            et.commit();
-
-            System.out.println("Compra deletada.");
-
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
+    
     public Long getId() {
         return id;
     }
@@ -234,5 +134,11 @@ public class Compra implements Serializable {
 
         return false;
     }
-
+    
+    @Override
+    public String toString() {
+        DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+        return "com.ifpe.tads.descorp.model.compra.Compra[ id=" + id + ":" + df.format(dataCompra) + " ]";
+    }
+    
 }

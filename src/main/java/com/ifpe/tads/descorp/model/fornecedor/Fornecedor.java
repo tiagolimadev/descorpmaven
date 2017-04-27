@@ -1,19 +1,10 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.ifpe.tads.descorp.model.fornecedor;
 
-import com.ifpe.tads.descorp.jpa.JpaUtil;
 import com.ifpe.tads.descorp.model.endereco.Endereco;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -22,7 +13,7 @@ import javax.persistence.Table;
 
 /**
  *
- * @author Tiago Lima
+ * @author Tiago Lima <tiagolimadev@outlook.com>
  */
 @Entity
 @Table(name = "TB_FORNECEDOR")
@@ -39,89 +30,6 @@ public class Fornecedor implements Serializable {
     
     @ManyToMany(mappedBy = "fornecedores")
     private List<Endereco> enderecos;
-
-    public void inserirFornecedor() {
-        EntityManagerFactory emf = JpaUtil.getInstance();
-        EntityManager em = emf.createEntityManager();
-        EntityTransaction et = em.getTransaction();
-        
-        try {
-            
-            et.begin();
-            
-            em.persist(this);
-            
-            et.commit();
-            
-            System.out.println("Fornecedor inserido.");
-            
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-        
-    }
-    
-    public void atualizarFornecedor() {
-        EntityManagerFactory emf = JpaUtil.getInstance();
-        EntityManager em = emf.createEntityManager();
-        EntityTransaction et = em.getTransaction();
-        
-        try {
-            
-            et.begin();
-            
-            em.merge(this);
-            
-            et.commit();
-            
-            System.out.println("Fornecedor atualizado.");
-            
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-    }
-    
-    public static Fornecedor selecionarFornecedor(Long id) {
-        EntityManagerFactory emf = JpaUtil.getInstance();
-        EntityManager em = emf.createEntityManager();
-        Fornecedor fornec = null;
-        
-        try {
-
-            fornec = em.find(Fornecedor.class, id);
-
-            System.out.println("Fornecedor selecionado: "+ fornec.getId());
-
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-        
-        return fornec;
-    }
-    
-    public void removerFornecedor() {
-        EntityManagerFactory emf = JpaUtil.getInstance();
-        EntityManager em = emf.createEntityManager();
-        EntityTransaction et = em.getTransaction();
-        
-        try {
-            
-            et.begin();
-            
-            if (em.contains(this)) {
-                em.remove(this);
-            } else {
-                em.remove(em.merge(this));
-            }
-            
-            et.commit();
-            
-            System.out.println("Fornecedor removido.");
-            
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-    }
     
     public Long getId() {
         return id;
@@ -175,4 +83,10 @@ public class Fornecedor implements Serializable {
         
         return false;
     }
+    
+    @Override
+    public String toString() {
+        return "com.ifpe.tads.descorp.model.fornecedor.Fornecedor[ id=" + id + ":" + nome + " ]";
+    }
+    
 }
