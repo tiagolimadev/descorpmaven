@@ -4,6 +4,7 @@ import com.ifpe.tads.descorp.model.fornecedor.Fornecedor;
 import com.ifpe.tads.descorp.model.usuario.Usuario;
 import java.io.Serializable;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -13,7 +14,15 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+import org.hibernate.validator.constraints.NotBlank;
 
 /**
  *
@@ -21,41 +30,79 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "TB_ENDERECO")
+@NamedQueries(
+        {
+            @NamedQuery(
+                    name = "Endereco.PorLogradouro",
+                    query = "SELECT e FROM Endereco e WHERE e.logradouro = :logradouro"
+            ),
+            @NamedQuery(
+                    name = "Endereco.PorCep",
+                    query = "SELECT e FROM Endereco e WHERE e.cep = :cep"
+            ),
+            @NamedQuery(
+                    name = "Endereco.PorBairro",
+                    query = "SELECT e FROM Endereco e WHERE e.bairro = :bairro"
+            ),
+            @NamedQuery(
+                    name = "Endereco.PorCidade",
+                    query = "SELECT e FROM Endereco e WHERE e.cidade = :cidade"
+            ),
+            @NamedQuery(
+                    name = "Endereco.PorEstado",
+                    query = "SELECT e FROM Endereco e WHERE e.estado = :estado"
+            ),
+        }
+)
 public class Endereco implements Serializable {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
+    @NotBlank
+    @Size(max = 150)
     @Column(name = "TXT_LOGRADOURO")
     private String logradouro;
     
+    @NotBlank
+    @Size(max = 150)
     @Column(name = "TXT_COMPLEMENTO")
     private String complemento;
     
+    @NotNull
+    @Min(1)
+    @Max(9999)
     @Column(name = "NUM_NUMERO")
     private Integer numero;
     
+    @Pattern(regexp = "[0-9]{2}.[0-9]{3}-[0-9]{3}")
     @Column(name = "TXT_CEP")
     private String cep;
     
+    @NotBlank
+    @Size(max = 50)
     @Column(name = "TXT_BAIRRO")
     private String bairro;
     
+    @NotBlank
+    @Size(max = 50)
     @Column(name = "TXT_CIDADE")
     private String cidade;
     
+    @NotBlank
+    @Size(max = 50)
     @Column(name = "TXT_ESTADO")
     private String estado;
     
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "TB_ENDERECOS_FORNECEDOR", joinColumns = {
         @JoinColumn(name = "ID_ENDERECO")},
             inverseJoinColumns = {
                 @JoinColumn(name = "ID_FORNECEDOR")})
     private List<Fornecedor> fornecedores;
     
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "TB_ENDERECOS_USUARIO", joinColumns = {
         @JoinColumn(name = "ID_ENDERECO")},
             inverseJoinColumns = {
