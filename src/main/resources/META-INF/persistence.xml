@@ -18,7 +18,8 @@
     <class>com.ifpe.tads.descorp.model.venda.Venda</class>
     <class>com.ifpe.tads.descorp.entrega.Entrega</class>
     <properties>
-      <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/descorp?zeroDateTimeBehavior=convertToNull&amp;useLegacyDatetimeCode=false&amp;serverTimezone=UTC"/>
+      <!--<property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/descorp?zeroDateTimeBehavior=convertToNull&amp;useLegacyDatetimeCode=false&amp;serverTimezone=UTC"/>-->
+      <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/descorp?zeroDateTimeBehavior=convertToNull"/>
       <property name="javax.persistence.jdbc.user" value="root"/>
       <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
       <property name="javax.persistence.jdbc.password" value="root"/>

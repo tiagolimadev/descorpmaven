@@ -26,12 +26,11 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
-import javax.persistence.UniqueConstraint;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.br.CPF;
 
 /**
@@ -62,6 +61,10 @@ import org.hibernate.validator.constraints.br.CPF;
                     name = "Usuario.PorLogin",
                     query = "SELECT u FROM Usuario u WHERE u.login = :login"
             )
+                
+                /*
+                    Criar query para listar usuários por TIPO.
+                */
 
         }
 )
@@ -103,16 +106,15 @@ public class Usuario implements Serializable {
     @Temporal(TemporalType.DATE)
     private Date dataNascimento;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "TXT_TIPO_USUARIO")
-    private TipoUsuario tipo;
-
     @ManyToMany(mappedBy = "usuarios")
     private List<Endereco> enderecos;
 
     @Transient
     private Integer idade;
 
+    @Transient
+    private TipoUsuario tipo;
+    
     private void calcularIdade() {
         Calendar nascimento = new GregorianCalendar();
         nascimento.setTime(this.dataNascimento);

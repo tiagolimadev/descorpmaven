@@ -1,8 +1,10 @@
 package com.ifpe.tads.descorp.model.produto;
 
 import dbunit.DbUnitUtil;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.EntityManager;
@@ -11,6 +13,8 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -73,7 +77,7 @@ public class CategoriaTest {
     }
     
     @Test
-    public void t01_criarCategoriaValida() {
+    public void t01_inserirCategoriaValida() {
         logger.info("Executando t01: inserirCategoriaValida");
         
         Categoria categoria1 = new Categoria();
@@ -90,7 +94,7 @@ public class CategoriaTest {
         produto1.setCodigo("MTG5P");
         produto1.setDescricao("Smartphone 4G");
         produto1.setNome("Moto G5 Plus");
-        produto1.setPreco(1499.99);
+        produto1.setPreco(new BigDecimal("1499.99"));
         produto1.setQtdeDisponivel(5L);
         produto1.setCategorias(categorias);
         
@@ -98,7 +102,7 @@ public class CategoriaTest {
         produto2.setCodigo("MTG5");
         produto2.setDescricao("Smartphone 4G");
         produto2.setNome("Moto G5");
-        produto2.setPreco(999.99);
+        produto2.setPreco(new BigDecimal("999.99"));
         produto2.setQtdeDisponivel(50L);
         produto2.setCategorias(categorias);
         
@@ -116,11 +120,36 @@ public class CategoriaTest {
         assertNotNull(produto2.getId());
         logger.log(Level.INFO, "Produto {0} incluído com sucesso.", produto2);
     }
-    
+
     @Test
-    public void t02_atualizarCategoriaValida()
+    public void t02_inserirCategoriaInvalida() {
+        logger.info("Executando t01: inserirCategoriaValida");
+        Categoria categoria = new Categoria();
+        try {
+            
+            categoria.setNome("InvalidoInvalidoInvalido");
+
+            em.persist(categoria);
+            em.flush();
+        } catch (ConstraintViolationException ex) {
+            Logger.getGlobal().info(ex.getMessage());
+
+            Set<ConstraintViolation<?>> constraintViolations = ex.getConstraintViolations();
+
+            if (logger.isLoggable(Level.INFO)) {
+                for (ConstraintViolation violation : constraintViolations) {
+                    Logger.getGlobal().log(Level.INFO, "{0}.{1}: {2}", new Object[]{violation.getRootBeanClass(), violation.getPropertyPath(), violation.getMessage()});
+                }
+            }
+
+            assertEquals(1, constraintViolations.size());
+        }
+    }
+
+    @Test
+    public void t03_atualizarCategoriaValida()
     {
-        logger.info("Executando t02: atualizarCategoriaValida");
+        logger.info("Executando t03: atualizarCategoriaValida");
         
         TypedQuery<Categoria> query = em.createNamedQuery("Categoria.PorNome", Categoria.class);
         query.setParameter("nome", "Bebidas");
@@ -133,23 +162,19 @@ public class CategoriaTest {
     }
 
     @Test
-    public void t03_categoriaQuantidadeProdutos() {
+    public void t04_categoriaQuantidadeProdutos() {
         logger.info("Executando t04: Categoria.QuantidadeProdutosSQL");
         Query query = em.createNamedQuery("Categoria.QuantidadeProdutosSQL");
         query.setParameter(1, "Celulares");
-        List<Object[]> resultados = query.getResultList();
-        assertEquals(1, resultados.size());
+        Object totalProdutos = query.getSingleResult();
+        assertEquals(2L, totalProdutos);
 
-        if (logger.isLoggable(Level.INFO)) {
-            for (Object[] resultado : resultados) {
-                logger.log(Level.INFO, "{0}: {1}", resultado);
-            }
-        }
+        logger.log(Level.INFO, "Quantidade de produtos: {0}", totalProdutos);
     }
     
     @Test
-    public void t04_categoriasSQL() {
-        logger.info("Executando t04: SELECT ID, TXT_NOME FROM TB_CATEGORIA");
+    public void t05_categoriasSQL() {
+        logger.info("Executando t05: SELECT ID, TXT_NOME FROM TB_CATEGORIA");
         Query query = em.createNativeQuery(
                 "SELECT ID, TXT_NOME FROM TB_CATEGORIA",
                 Categoria.class);
@@ -164,9 +189,9 @@ public class CategoriaTest {
     }
 
     @Test
-    public void t05_removerCategoriaValida()
+    public void t06_removerCategoriaValida()
     {
-        logger.info("Executando t05: removerCategoriaValida");
+        logger.info("Executando t06: removerCategoriaValida");
         TypedQuery<Categoria> query = em.createNamedQuery("Categoria.PorNome", Categoria.class);
         query.setParameter("nome", "Bebidas Alcoólicas");
         Categoria categoria = query.getSingleResult();

@@ -82,7 +82,7 @@ public class ClienteTest {
 
         Cliente cliente = new Cliente();
 
-        cliente.setCpf("01234567890");
+        cliente.setCpf("87486422824");
         cliente.setDataNascimento(new GregorianCalendar(1992, 11, 1).getTime());
         cliente.setEmail("a@a.com");
         cliente.setLogin("qwer");
@@ -126,4 +126,10 @@ public class ClienteTest {
         em.flush();
         assertEquals(0, query.getResultList().size());
     }
+    
+    /*
+    
+    Criar testes de validação de unique: MySQLIntegrityConstraintViolationException
+    
+    */
 }

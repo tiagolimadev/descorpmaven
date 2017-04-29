@@ -82,7 +82,7 @@ public class OperadorTest {
 
         Operador cliente = new Operador();
 
-        cliente.setCpf("01234567890");
+        cliente.setCpf("69814632457");
         cliente.setDataNascimento(new GregorianCalendar(1954, 5, 15).getTime());
         cliente.setEmail("email@email.com");
         cliente.setLogin("qwerty");

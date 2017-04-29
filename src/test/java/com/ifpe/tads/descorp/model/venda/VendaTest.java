@@ -1,7 +1,10 @@
 package com.ifpe.tads.descorp.model.venda;
 
+import com.ifpe.tads.descorp.model.produto.Produto;
 import com.ifpe.tads.descorp.model.usuario.Cliente;
 import dbunit.DbUnitUtil;
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -32,7 +35,6 @@ public class VendaTest {
     private static Logger logger;
     private EntityManager em;
     private EntityTransaction et;
-    private static Long clienteId;
 
     public VendaTest() {
     }
@@ -79,24 +81,24 @@ public class VendaTest {
         logger.info("Executando t01: inserirVendaValida");
 
         Venda venda = new Venda();
-        Cliente cliente = new Cliente();
-
-        cliente.setNome("Eduardo Amaral");
-        cliente.setCpf("01234567890");
-        cliente.setDataNascimento(new GregorianCalendar(1994, 4, 1).getTime());
-        cliente.setEmail("efsa@ifpe.edu.br");
-        cliente.setLogin("eduardo");
-        cliente.setSenha("123456789");
-
-        em.persist(cliente);
-        em.flush();
-
+        
+        Cliente cliente = em.find(Cliente.class, 1L);
+        Produto produto = em.find(Produto.class, 1L);
+        
         assertNotNull(cliente.getId());
-        clienteId = cliente.getId();
         logger.log(Level.INFO, "Cliente {0} incluído com sucesso.", cliente);
 
         venda.setCliente(cliente);
-        venda.setDataVenda(new Date());
+        venda.setDataVenda(new GregorianCalendar().getTime());
+        venda.setItensVenda(new ArrayList<ItemVenda>());
+        
+        ItemVenda item = new ItemVenda();
+        item.setPrecoUnitario(new BigDecimal("5.50"));
+        item.setQuantidade(5);
+        item.setVenda(venda);
+        item.setProduto(produto);
+        
+        venda.getItensVenda().add(item);
 
         em.persist(venda);
         em.flush();
@@ -112,7 +114,7 @@ public class VendaTest {
         calendar.add(Calendar.DAY_OF_MONTH, 20);
 
         TypedQuery<Venda> query = em.createNamedQuery("Venda.PorDataCliente", Venda.class);
-        query.setParameter("clienteId", clienteId);
+        query.setParameter("clienteId", 1L);
         query.setParameter("dataVenda", new Date());
 
         Venda venda = query.getSingleResult();
@@ -131,7 +133,7 @@ public class VendaTest {
         calendar.add(Calendar.DAY_OF_MONTH, 20);
 
         TypedQuery<Venda> query = em.createNamedQuery("Venda.PorDataCliente", Venda.class);
-        query.setParameter("clienteId", clienteId);
+        query.setParameter("clienteId", 1L);
         query.setParameter("dataVenda", calendar.getTime());
 
         Venda venda = query.getSingleResult();

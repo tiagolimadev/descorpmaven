@@ -5,7 +5,6 @@ import com.ifpe.tads.descorp.model.usuario.Cliente;
 import com.ifpe.tads.descorp.model.usuario.Operador;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -26,7 +25,6 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
-import javax.validation.constraints.Future;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -52,7 +50,7 @@ public class Venda implements Serializable {
     @Transient
     private BigDecimal valorTotal;
 
-    @Future
+    //Criar Validador para o dia atual.
     @Temporal(TemporalType.DATE)
     @Column(name = "DT_DATA_VENDA", nullable = false)
     private Date dataVenda;

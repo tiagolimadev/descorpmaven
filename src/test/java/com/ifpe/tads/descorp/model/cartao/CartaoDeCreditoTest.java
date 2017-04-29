@@ -36,7 +36,6 @@ public class CartaoDeCreditoTest {
     private static Logger logger;
     private EntityManager em;
     private EntityTransaction et;
-    private static Long clienteId;
 
     public CartaoDeCreditoTest() {
     }
@@ -83,26 +82,13 @@ public class CartaoDeCreditoTest {
         logger.info("Executando t01: inserirCartaoDeCreditoValido");
 
         CartaoDeCredito cartao = new CartaoDeCredito();
-        Cliente cliente = new Cliente();
-
-        cliente.setCpf("01234567890");
-        cliente.setDataNascimento(new GregorianCalendar(1990, 7, 21).getTime());
-        cliente.setEmail("a@a.com");
-        cliente.setLogin("qwer");
-        cliente.setSenha("zxcasdqwe");
-        cliente.setNome("ZÉ RMR");
-
-        em.persist(cliente);
-        em.flush();
-
-        assertNotNull(cliente.getId());
-        clienteId = cliente.getId();
-
+        Cliente cliente = em.find(Cliente.class, 1L);
+        
         cartao.setBandeira(Bandeira.VISA);
         cartao.setCliente(cliente);
         cartao.setNomeImpresso("ZÉ RMS");
         cartao.setValidade(new GregorianCalendar(2019, 5, 1).getTime());
-        cartao.setNumero("1234567812345678");
+        cartao.setNumero("4024007168509924");
 
         em.persist(cartao);
         em.flush();
@@ -144,7 +130,7 @@ public class CartaoDeCreditoTest {
         logger.info("Executando t04: selecionarCartaoPorNumero");
 
         TypedQuery<CartaoDeCredito> query = em.createNamedQuery("CartaoDeCredito.PorNumero", CartaoDeCredito.class);
-        query.setParameter("numero", "1234567812345678");
+        query.setParameter("numero", "4024007168509924");
 
         CartaoDeCredito cartao = query.getSingleResult();
 
@@ -156,7 +142,7 @@ public class CartaoDeCreditoTest {
         logger.info("Executando t05: selecionarCartaoPorCliente");
 
         TypedQuery<CartaoDeCredito> query = em.createNamedQuery("CartaoDeCredito.PorCliente", CartaoDeCredito.class);
-        query.setParameter("clienteId", clienteId);
+        query.setParameter("clienteId", 1L);
 
         CartaoDeCredito cartao = query.getSingleResult();
 
@@ -168,7 +154,7 @@ public class CartaoDeCreditoTest {
         logger.info("Executando t06: selecionarCartaoPorClienteBandeira");
 
         TypedQuery<CartaoDeCredito> query = em.createNamedQuery("CartaoDeCredito.PorClienteBandeira", CartaoDeCredito.class);
-        query.setParameter("clienteId", clienteId);
+        query.setParameter("clienteId", 1L);
         query.setParameter("bandeira", Bandeira.VISA);
 
         CartaoDeCredito cartao = query.getSingleResult();

@@ -82,7 +82,7 @@ public class EntregadorTest {
 
         Entregador entregador = new Entregador();
 
-        entregador.setCpf("01234567890");
+        entregador.setCpf("42825377600");
         entregador.setDataNascimento(new GregorianCalendar(1975, 11, 1).getTime());
         entregador.setEmail("a@a.com");
         entregador.setLogin("erty");

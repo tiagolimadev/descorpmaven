@@ -5,7 +5,6 @@ import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.ColumnResult;
 import javax.persistence.Entity;
-import javax.persistence.EntityResult;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -17,7 +16,6 @@ import javax.persistence.NamedQuery;
 import javax.persistence.SqlResultSetMapping;
 import javax.persistence.Table;
 import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 /**
@@ -43,7 +41,7 @@ import javax.validation.constraints.Size;
             ),
             @NamedNativeQuery(
                     name = "Categoria.QuantidadeProdutosSQL",
-                    query = "SELECT cat.ID, cat.TXT_NOME, count(prodcat.ID_PRODUTO) as TOTAL_PRODUTOS from TB_CATEGORIA cat, TB_PRODUTOS_CATEGORIAS AS prodcat "
+                    query = "SELECT count(prodcat.ID_PRODUTO) as TOTAL_PRODUTOS from TB_CATEGORIA cat, TB_PRODUTOS_CATEGORIAS AS prodcat "
                             + "WHERE cat.TXT_NOME LIKE ? AND cat.ID = prodcat.ID_CATEGORIA GROUP BY cat.ID",
                     resultSetMapping = "Categoria.QuantidadeProdutos"
             )
@@ -51,8 +49,6 @@ import javax.validation.constraints.Size;
 )
 @SqlResultSetMapping(
         name = "Categoria.QuantidadeProdutos",
-        entities = {
-            @EntityResult(entityClass = Categoria.class)},
         columns = {
             @ColumnResult(name = "TOTAL_PRODUTOS", type = Long.class)}
 )
@@ -62,7 +58,7 @@ public class Categoria implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @NotBlank
+    @org.hibernate.validator.constraints.NotBlank
     @Size(max = 20)
     @Column(name = "TXT_NOME")
     private String nome;

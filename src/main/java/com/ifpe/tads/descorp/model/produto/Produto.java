@@ -2,6 +2,7 @@ package com.ifpe.tads.descorp.model.produto;
 
 import com.ifpe.tads.descorp.model.compra.ItemCompra;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -15,8 +16,12 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import org.hibernate.validator.constraints.NotBlank;
 
 /**
  *
@@ -45,9 +50,14 @@ public class Produto implements Serializable {
     @Column(name = "TXT_DESCRICAO")
     private String descricao;
 
+    @DecimalMin("0.1")
+    @NotNull
     @Column(name = "NUM_PRECO")
-    private Double preco;
+    private BigDecimal preco;
 
+    @Min(0)
+    @Max(30000)
+    @NotNull
     @Column(name = "NUM_QTDE_DISPONIVEL")
     private Long qtdeDisponivel;
 
@@ -99,11 +109,11 @@ public class Produto implements Serializable {
         this.descricao = descricao;
     }
 
-    public Double getPreco() {
+    public BigDecimal getPreco() {
         return preco;
     }
 
-    public void setPreco(Double preco) {
+    public void setPreco(BigDecimal preco) {
         this.preco = preco;
     }
 

@@ -76,7 +76,7 @@ public class AdministradorTest {
 
         Administrador adm = new Administrador();
 
-        adm.setCpf("01234567890");
+        adm.setCpf("34617066390");
         adm.setDataNascimento(new GregorianCalendar(2001, 3, 14).getTime());
         adm.setEmail("a@a.com");
         adm.setLogin("adbc");
@@ -96,12 +96,12 @@ public class AdministradorTest {
         logger.info("Executando t02: atualizarAdministradorValido");
 
         TypedQuery<Usuario> query = em.createNamedQuery("Usuario.PorCPF", Usuario.class);
-        query.setParameter("cpf", "01234567890");
+        query.setParameter("cpf", "34617066390");
 
         Administrador adm = (Administrador) query.getSingleResult();
         assertNotNull(adm.getId());
 
-        adm.setCpf("09846915454");
+        adm.setCpf("32107211302");
         em.flush();
         assertEquals(0, query.getResultList().size());
     }
@@ -111,7 +111,7 @@ public class AdministradorTest {
         logger.info("Executando t03: removerAdministradorValido");
 
         TypedQuery<Usuario> query = em.createNamedQuery("Usuario.PorCPF", Usuario.class);
-        query.setParameter("cpf", "09846915454");
+        query.setParameter("cpf", "32107211302");
         
         Administrador adm = (Administrador) query.getSingleResult();
         assertNotNull(adm.getId());
