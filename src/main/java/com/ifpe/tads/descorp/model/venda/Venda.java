@@ -4,6 +4,8 @@ import com.ifpe.tads.descorp.entrega.Entrega;
 import com.ifpe.tads.descorp.model.usuario.Cliente;
 import com.ifpe.tads.descorp.model.usuario.Operador;
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -17,11 +19,15 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
+import javax.validation.constraints.Future;
+import javax.validation.constraints.NotNull;
 
 /**
  *
@@ -29,6 +35,14 @@ import javax.persistence.Transient;
  */
 @Entity
 @Table(name = "TB_VENDA")
+@NamedQueries(
+    {
+        @NamedQuery(
+            name = "Venda.PorDataCliente",
+            query = "SELECT v FROM Venda v, Cliente c WHERE v.cliente.id = :clienteId AND v.dataVenda = :dataVenda ORDER BY v.id"
+        )
+    }
+)
 public class Venda implements Serializable {
 
     @Id
@@ -36,8 +50,9 @@ public class Venda implements Serializable {
     private Long id;
 
     @Transient
-    private Double valorTotal;
+    private BigDecimal valorTotal;
 
+    @Future
     @Temporal(TemporalType.DATE)
     @Column(name = "DT_DATA_VENDA", nullable = false)
     private Date dataVenda;
@@ -46,10 +61,12 @@ public class Venda implements Serializable {
     @JoinColumn(name = "ID_OPERADOR", referencedColumnName = "ID")
     private Operador operador;
 
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "ID_CLIENTE", referencedColumnName = "ID")
     private Cliente cliente;
 
+    @NotNull
     @OneToMany(mappedBy = "venda", fetch = FetchType.LAZY,
             cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItemVenda> itensVenda;
@@ -59,9 +76,9 @@ public class Venda implements Serializable {
     private List<Entrega> entregas;
 
     private void calcularValorTotal() {
-        double total = 0;
+        BigDecimal total = new BigDecimal(0);
         for (ItemVenda item : this.itensVenda) {
-            total += item.getSubTotal();
+            total = total.add(item.getSubTotal());
         }
         this.valorTotal = total;
     }
@@ -74,12 +91,12 @@ public class Venda implements Serializable {
         this.id = id;
     }
 
-    public Double getValorTotal() {
+    public BigDecimal getValorTotal() {
         this.calcularValorTotal();
         return valorTotal;
     }
 
-    public void setValorTotal(Double valorTotal) {
+    public void setValorTotal(BigDecimal valorTotal) {
         this.valorTotal = valorTotal;
     }
 

@@ -20,10 +20,19 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.ManyToMany;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
+import javax.persistence.UniqueConstraint;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Past;
+import javax.validation.constraints.Size;
+import org.hibernate.validator.constraints.br.CPF;
 
 /**
  *
@@ -35,48 +44,82 @@ import javax.persistence.Transient;
 @DiscriminatorColumn(name = "U",
         discriminatorType = DiscriminatorType.STRING, length = 1)
 @Access(AccessType.FIELD)
+@NamedQueries(
+        {
+            @NamedQuery(
+                    name = "Usuario.PorCPF",
+                    query = "SELECT u FROM Usuario u WHERE u.cpf = :cpf"
+            ),
+            @NamedQuery(
+                    name = "Usuario.PorNome",
+                    query = "SELECT u FROM Usuario u WHERE u.nome = :nome"
+            ),
+            @NamedQuery(
+                    name = "Usuario.PorEmail",
+                    query = "SELECT u FROM Usuario u WHERE u.email = :email"
+            ),
+            @NamedQuery(
+                    name = "Usuario.PorLogin",
+                    query = "SELECT u FROM Usuario u WHERE u.login = :login"
+            )
+
+        }
+)
 public class Usuario implements Serializable {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
+    @NotBlank
+    @Size(max = 100)
     @Column(name = "TXT_NOME")
     private String nome;
-    
+
+    @Email
+    @NotBlank
+    @Size(max = 100)
     @Column(name = "TXT_EMAIL")
     private String email;
-    
-    @Column(name = "TXT_LOGIN")
+
+    @NotBlank
+    @Size(min = 4, max = 12)
+    @Column(name = "TXT_LOGIN", unique = true)
     private String login;
-    
+
+    @NotBlank
+    @Size(min = 8, max = 16)
     @Column(name = "TXT_SENHA")
     private String senha;
-    
-    @Column(name = "TXT_CPF")
+
+    @CPF
+    @NotBlank
+    @Column(name = "TXT_CPF", unique = true)
     private String cpf;
-    
+
+    @Past
+    @NotNull
     @Column(name = "DT_NASCIMENTO")
     @Temporal(TemporalType.DATE)
     private Date dataNascimento;
-    
+
     @Enumerated(EnumType.STRING)
     @Column(name = "TXT_TIPO_USUARIO")
     private TipoUsuario tipo;
-    
+
     @ManyToMany(mappedBy = "usuarios")
     private List<Endereco> enderecos;
-    
+
     @Transient
     private Integer idade;
-    
+
     private void calcularIdade() {
         Calendar nascimento = new GregorianCalendar();
         nascimento.setTime(this.dataNascimento);
         Calendar hoje = Calendar.getInstance();
         Integer idade = hoje.get(Calendar.YEAR) - nascimento.get(Calendar.YEAR);
         nascimento.add(Calendar.YEAR, idade);
-        
+
         if (hoje.before(nascimento)) {
             idade--;
         }
@@ -154,7 +197,7 @@ public class Usuario implements Serializable {
     public void setEnderecos(List<Endereco> enderecos) {
         this.enderecos = enderecos;
     }
-    
+
     public Integer getIdade() {
         this.calcularIdade();
         return idade;
@@ -163,31 +206,31 @@ public class Usuario implements Serializable {
     public void setIdade(Integer idade) {
         this.idade = idade;
     }
-    
+
     @Override
     public int hashCode() {
         int hash = 0;
         hash += (id != null ? id.hashCode() : 0);
         return hash;
     }
-    
+
     @Override
     public boolean equals(Object object) {
         if (!(object instanceof Usuario)) {
             return false;
         }
         Usuario other = (Usuario) object;
-        
+
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
-        
+
         return false;
     }
-    
+
     @Override
     public String toString() {
         return "com.ifpe.tads.descorp.model.usuario.Usuario[ id=" + id + ":" + tipo + " ]";
     }
-    
+
 }

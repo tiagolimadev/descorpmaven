@@ -31,13 +31,16 @@ import javax.validation.constraints.Size;
     }
 )
 public class Categoria implements Serializable {
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    
     @NotBlank
     @Size(max = 20)
     @Column(name = "TXT_NOME")
     private String nome;
+    
     @Valid
     @ManyToMany(mappedBy = "categorias", cascade = CascadeType.PERSIST)
     private List<Produto> produtos;
