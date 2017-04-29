@@ -2,15 +2,19 @@ package com.ifpe.tads.descorp.model.produto;
 
 import java.io.Serializable;
 import java.util.List;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.ColumnResult;
 import javax.persistence.Entity;
+import javax.persistence.EntityResult;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.NamedNativeQueries;
+import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.SqlResultSetMapping;
 import javax.persistence.Table;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
@@ -30,6 +34,28 @@ import javax.validation.constraints.Size;
         )
     }
 )
+@NamedNativeQueries(
+        {
+            @NamedNativeQuery(
+                    name = "Categoria.PorNomeSQL",
+                    query = "SELECT ID, TXT_NOME FROM TB_CATEGORIA WHERE TXT_NOME LIKE ? ORDER BY ID",
+                    resultClass = Categoria.class
+            ),
+            @NamedNativeQuery(
+                    name = "Categoria.QuantidadeProdutosSQL",
+                    query = "SELECT cat.ID, cat.TXT_NOME, count(prodcat.ID_PRODUTO) as TOTAL_PRODUTOS from TB_CATEGORIA cat, TB_PRODUTOS_CATEGORIAS AS prodcat "
+                            + "WHERE cat.TXT_NOME LIKE ? AND cat.ID = prodcat.ID_CATEGORIA GROUP BY cat.ID",
+                    resultSetMapping = "Categoria.QuantidadeProdutos"
+            )
+        }
+)
+@SqlResultSetMapping(
+        name = "Categoria.QuantidadeProdutos",
+        entities = {
+            @EntityResult(entityClass = Categoria.class)},
+        columns = {
+            @ColumnResult(name = "TOTAL_PRODUTOS", type = Long.class)}
+)
 public class Categoria implements Serializable {
     
     @Id
@@ -42,7 +68,7 @@ public class Categoria implements Serializable {
     private String nome;
     
     @Valid
-    @ManyToMany(mappedBy = "categorias", cascade = CascadeType.PERSIST)
+    @ManyToMany(mappedBy = "categorias")
     private List<Produto> produtos;
     
     public Long getId() {

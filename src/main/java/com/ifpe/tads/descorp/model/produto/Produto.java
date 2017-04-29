@@ -51,7 +51,7 @@ public class Produto implements Serializable {
     @Column(name = "NUM_QTDE_DISPONIVEL")
     private Long qtdeDisponivel;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "TB_PRODUTOS_CATEGORIAS", joinColumns = {
         @JoinColumn(name = "ID_PRODUTO")},
             inverseJoinColumns = {
