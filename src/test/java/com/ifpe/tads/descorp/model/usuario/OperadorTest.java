@@ -80,20 +80,21 @@ public class OperadorTest {
     public void t01_inserirOperadorValido() {
         logger.info("Executando t01: inserirOperadorValido");
 
-        Operador cliente = new Operador();
+        Operador operador = new Operador();
 
-        cliente.setCpf("69814632457");
-        cliente.setDataNascimento(new GregorianCalendar(1954, 5, 15).getTime());
-        cliente.setEmail("email@email.com");
-        cliente.setLogin("qwerty");
-        cliente.setSenha("12341234");
-        cliente.setNome("Operador");
+        operador.setCpf("69814632457");
+        operador.setDataNascimento(new GregorianCalendar(1954, 5, 15).getTime());
+        operador.setEmail("email@email.com");
+        operador.setLogin("qwerty");
+        operador.setSenha("12341234");
+        operador.setNome("Operador");
+        operador.setTipo(TipoUsuario.OPERADOR);
 
-        em.persist(cliente);
+        em.persist(operador);
         em.flush();
 
-        assertNotNull(cliente.getId());
-        logger.log(Level.INFO, "Operador {0} incluído com sucesso.", cliente.getId());
+        assertNotNull(operador.getId());
+        logger.log(Level.INFO, "Operador {0} incluído com sucesso.", operador.getId());
 
     }
 
@@ -102,12 +103,11 @@ public class OperadorTest {
         logger.info("Executando t02: atualizarOperadorValido");
 
         TypedQuery<Usuario> query = em.createNamedQuery("Usuario.PorEmail", Usuario.class);
-        query.setParameter("email", "email@email.com");
+        query.setParameter("email", "cs@a.com");
 
         Operador operador = (Operador) query.getSingleResult();
-        assertNotNull(operador.getId());
 
-        operador.setEmail("ed@ifpe.com");
+        operador.setEmail("asd@a.com");
         em.flush();
         assertEquals(0, query.getResultList().size());
     }
@@ -116,11 +116,10 @@ public class OperadorTest {
     public void t03_removerOperadorValido() {
         logger.info("Executando t03: removerOperadorValido");
 
-        TypedQuery<Usuario> query = em.createNamedQuery("Usuario.PorEmail", Usuario.class);
-        query.setParameter("email", "ed@ifpe.com");
+        TypedQuery<Usuario> query = em.createNamedQuery("Usuario.PorCPF", Usuario.class);
+        query.setParameter("cpf", "36127403693");
 
         Operador operador = (Operador) query.getSingleResult();
-        assertNotNull(operador.getId());
 
         em.remove(operador);
         em.flush();

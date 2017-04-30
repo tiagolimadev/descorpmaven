@@ -88,6 +88,7 @@ public class EntregadorTest {
         entregador.setLogin("erty");
         entregador.setSenha("cvbdfgert");
         entregador.setNome("Entregador");
+        entregador.setTipo(TipoUsuario.ENTREGADOR);
 
         em.persist(entregador);
         em.flush();
@@ -101,13 +102,13 @@ public class EntregadorTest {
     public void t02_atualizarEntregadorValido() {
         logger.info("Executando t02: atualizarEntregadorValido");
 
-        TypedQuery<Usuario> query = em.createNamedQuery("Usuario.PorLogin", Usuario.class);
-        query.setParameter("login", "erty");
+        TypedQuery<Usuario> query = em.createNamedQuery("Usuario.PorNome", Usuario.class);
+        query.setParameter("nome", "Mirela Silva");
 
         Entregador entregador = (Entregador) query.getSingleResult();
-        assertNotNull(entregador.getId());
-
-        entregador.setLogin("Kiev");
+        
+        entregador.setNome("Mirela Silvana Silva");
+        
         em.flush();
         assertEquals(0, query.getResultList().size());
     }
@@ -116,12 +117,11 @@ public class EntregadorTest {
     public void t03_removerEntregadorValido() {
         logger.info("Executando t03: removerEntregadorValido");
 
-        TypedQuery<Usuario> query = em.createNamedQuery("Usuario.PorLogin", Usuario.class);
-        query.setParameter("login", "Kiev");
+        TypedQuery<Usuario> query = em.createNamedQuery("Usuario.PorCPF", Usuario.class);
+        query.setParameter("cpf", "51272233766");
 
         Entregador entregador = (Entregador) query.getSingleResult();
-        assertNotNull(entregador.getId());
-
+        
         em.remove(entregador);
         em.flush();
         assertEquals(0, query.getResultList().size());

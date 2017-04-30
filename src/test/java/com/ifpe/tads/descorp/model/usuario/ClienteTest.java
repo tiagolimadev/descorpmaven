@@ -88,7 +88,8 @@ public class ClienteTest {
         cliente.setLogin("qwer");
         cliente.setSenha("zxcasdqwe");
         cliente.setNome("Cliente");
-
+        cliente.setTipo(TipoUsuario.CLIENTE);
+        
         em.persist(cliente);
         em.flush();
 
@@ -102,12 +103,11 @@ public class ClienteTest {
         logger.info("Executando t02: atualizarClienteValido");
 
         TypedQuery<Usuario> query = em.createNamedQuery("Usuario.PorNome", Usuario.class);
-        query.setParameter("nome", "Cliente");
+        query.setParameter("nome", "XPTO");
 
         Cliente cliente = (Cliente) query.getSingleResult();
-        assertNotNull(cliente.getId());
 
-        cliente.setNome("Maria");
+        cliente.setNome("XPTO 12345");
         em.flush();
         assertEquals(0, query.getResultList().size());
     }
@@ -116,11 +116,10 @@ public class ClienteTest {
     public void t03_removerClienteValido() {
         logger.info("Executando t03: removerClienteValido");
 
-        TypedQuery<Usuario> query = em.createNamedQuery("Usuario.PorNome", Usuario.class);
-        query.setParameter("nome", "Maria");
+        TypedQuery<Usuario> query = em.createNamedQuery("Usuario.PorCPF", Usuario.class);
+        query.setParameter("cpf", "01234567890");
 
         Cliente cliente = (Cliente) query.getSingleResult();
-        assertNotNull(cliente.getId());
 
         em.remove(cliente);
         em.flush();

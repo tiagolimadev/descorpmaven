@@ -67,7 +67,7 @@ import org.hibernate.validator.constraints.br.CPF;
             )
         }
 )
-public class Usuario implements Serializable {
+public abstract class Usuario implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
