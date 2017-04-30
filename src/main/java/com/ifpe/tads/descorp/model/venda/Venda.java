@@ -1,6 +1,7 @@
 package com.ifpe.tads.descorp.model.venda;
 
 import com.ifpe.tads.descorp.entrega.Entrega;
+import com.ifpe.tads.descorp.jpa.validator.ValidaHoje;
 import com.ifpe.tads.descorp.model.usuario.Cliente;
 import com.ifpe.tads.descorp.model.usuario.Operador;
 import java.io.Serializable;
@@ -11,6 +12,7 @@ import java.util.Date;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.ColumnResult;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -18,9 +20,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.SqlResultSetMapping;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -37,7 +41,7 @@ import javax.validation.constraints.NotNull;
     {
         @NamedQuery(
             name = "Venda.PorDataCliente",
-            query = "SELECT v FROM Venda v, Cliente c WHERE v.cliente.id = :clienteId AND v.dataVenda = :dataVenda ORDER BY v.id"
+            query = "SELECT v FROM Venda v WHERE v.cliente.id = :clienteId AND v.dataVenda = :dataVenda"
         )
     }
 )
@@ -50,9 +54,9 @@ public class Venda implements Serializable {
     @Transient
     private BigDecimal valorTotal;
 
-    //Criar Validador para o dia atual.
+    @ValidaHoje
     @Temporal(TemporalType.DATE)
-    @Column(name = "DT_DATA_VENDA", nullable = false)
+    @Column(name = "DT_VENDA", nullable = false)
     private Date dataVenda;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
@@ -72,6 +76,9 @@ public class Venda implements Serializable {
     @OneToMany(mappedBy = "venda", fetch = FetchType.LAZY,
             cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Entrega> entregas;
+    
+    @Column(name = "SN_CANCELADA", columnDefinition="tinyint(1) default 1")
+    private Boolean cancelada;
 
     private void calcularValorTotal() {
         BigDecimal total = new BigDecimal(0);

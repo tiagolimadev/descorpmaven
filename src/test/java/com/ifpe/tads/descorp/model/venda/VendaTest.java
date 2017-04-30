@@ -5,16 +5,18 @@ import com.ifpe.tads.descorp.model.usuario.Cliente;
 import dbunit.DbUnitUtil;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
+import javax.persistence.TemporalType;
 import javax.persistence.TypedQuery;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -81,23 +83,23 @@ public class VendaTest {
         logger.info("Executando t01: inserirVendaValida");
 
         Venda venda = new Venda();
-        
+
         Cliente cliente = em.find(Cliente.class, 1L);
         Produto produto = em.find(Produto.class, 1L);
-        
+
         assertNotNull(cliente.getId());
         logger.log(Level.INFO, "Cliente {0} incluído com sucesso.", cliente);
 
         venda.setCliente(cliente);
         venda.setDataVenda(new GregorianCalendar().getTime());
         venda.setItensVenda(new ArrayList<ItemVenda>());
-        
+
         ItemVenda item = new ItemVenda();
         item.setPrecoUnitario(new BigDecimal("5.50"));
         item.setQuantidade(5);
         item.setVenda(venda);
         item.setProduto(produto);
-        
+
         venda.getItensVenda().add(item);
 
         em.persist(venda);
@@ -108,36 +110,72 @@ public class VendaTest {
     }
 
     @Test
-    public void t02_atualizarVendaValida() {
-        logger.info("Executando t02: atualizarVendaValida");
-        GregorianCalendar calendar = new GregorianCalendar();
-        calendar.add(Calendar.DAY_OF_MONTH, 20);
+    public void t02_inserirVendaInvalida() {
+        logger.info("Executando t02: inserirVendaInvalida");
 
-        TypedQuery<Venda> query = em.createNamedQuery("Venda.PorDataCliente", Venda.class);
-        query.setParameter("clienteId", 1L);
-        query.setParameter("dataVenda", new Date());
+        Venda venda = new Venda();
 
-        Venda venda = query.getSingleResult();
-        assertNotNull(venda.getId());
-        logger.log(Level.INFO, "Venda {0} selecionar PorDataCliente", venda.getId());
-        
-        venda.setDataVenda(calendar.getTime());
-        em.flush();
-        assertEquals(0, query.getResultList().size());
+        try {
+
+            venda.setDataVenda(new GregorianCalendar(1992, 1, 2).getTime());
+
+            em.persist(venda);
+            em.flush();
+        } catch (ConstraintViolationException ex) {
+            Logger.getGlobal().info(ex.getMessage());
+
+            Set<ConstraintViolation<?>> constraintViolations = ex.getConstraintViolations();
+
+            if (logger.isLoggable(Level.INFO)) {
+                for (ConstraintViolation violation : constraintViolations) {
+                    Logger.getGlobal().log(Level.INFO, "{0}.{1}: {2}", new Object[]{violation.getRootBeanClass(), violation.getPropertyPath(), violation.getMessage()});
+                }
+            }
+
+            assertEquals(3, constraintViolations.size());
+        }
     }
 
     @Test
-    public void t03_removerVendaValida() {
-        logger.info("Executando t03: removerVendaValida");
-        GregorianCalendar calendar = new GregorianCalendar();
-        calendar.add(Calendar.DAY_OF_MONTH, 20);
+    public void t03_atualizarVendaInvalida() {
+        logger.info("Executando t03: atualizarVendaInvalida");
 
         TypedQuery<Venda> query = em.createNamedQuery("Venda.PorDataCliente", Venda.class);
-        query.setParameter("clienteId", 1L);
-        query.setParameter("dataVenda", calendar.getTime());
+        query.setParameter("clienteId", 2L);
+        query.setParameter("dataVenda", new GregorianCalendar(2017, 2, 15).getTime(), TemporalType.DATE);
 
         Venda venda = query.getSingleResult();
-        assertNotNull(venda.getId());
+
+        try {
+
+            venda.setDataVenda(new GregorianCalendar(2014, 3, 1).getTime());
+
+            em.flush();
+        } catch (ConstraintViolationException ex) {
+            Logger.getGlobal().info(ex.getMessage());
+
+            Set<ConstraintViolation<?>> constraintViolations = ex.getConstraintViolations();
+
+            if (logger.isLoggable(Level.INFO)) {
+                for (ConstraintViolation violation : constraintViolations) {
+                    Logger.getGlobal().log(Level.INFO, "{0}.{1}: {2}", new Object[]{violation.getRootBeanClass(), violation.getPropertyPath(), violation.getMessage()});
+                }
+            }
+
+            assertEquals(1, constraintViolations.size());
+        }
+
+    }
+
+    @Test
+    public void t05_removerVendaValida() {
+        logger.info("Executando t05: removerVendaValida");
+
+        TypedQuery<Venda> query = em.createNamedQuery("Venda.PorDataCliente", Venda.class);
+        query.setParameter("clienteId", 2L);
+        query.setParameter("dataVenda", new GregorianCalendar(2017, 2, 15).getTime(), TemporalType.DATE);
+
+        Venda venda = query.getSingleResult();
 
         em.remove(venda);
         em.flush();

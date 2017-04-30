@@ -5,9 +5,11 @@
  */
 package com.ifpe.tads.descorp.model.cartao;
 
+import com.ifpe.tads.descorp.model.produto.Categoria;
 import com.ifpe.tads.descorp.model.usuario.*;
 import dbunit.DbUnitUtil;
 import java.util.GregorianCalendar;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.EntityManager;
@@ -15,14 +17,16 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import javax.persistence.TypedQuery;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 import org.junit.After;
 import org.junit.AfterClass;
+import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.FixMethodOrder;
 import org.junit.runners.MethodSorters;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 /**
@@ -78,8 +82,8 @@ public class CartaoDeCreditoTest {
     }
 
     @Test
-    public void t01_inserirCartaoDeCreditoValido() {
-        logger.info("Executando t01: inserirCartaoDeCreditoValido");
+    public void t01_inserirCartaoValido() {
+        logger.info("Executando t01: inserirCartaoValido");
 
         CartaoDeCredito cartao = new CartaoDeCredito();
         Cliente cliente = em.find(Cliente.class, 1L);
@@ -100,12 +104,12 @@ public class CartaoDeCreditoTest {
 
     @Test
     public void t02_atualizarCartaoValido() {
-        logger.info("Executando t02: atualizarCartaoDeCreditoValido");
+        logger.info("Executando t02: atualizarCartaoValido");
 
         TypedQuery<CartaoDeCredito> query = em.createNamedQuery("CartaoDeCredito.PorNomeImpresso", CartaoDeCredito.class);
-        query.setParameter("nomeImpresso", "ZÉ RMS");
+        query.setParameter("nomeImpresso", "XPTO");
 
-        CartaoDeCredito cartao = (CartaoDeCredito) query.getSingleResult();
+        CartaoDeCredito cartao = query.getSingleResult();
         assertNotNull(cartao);
 
         cartao.setNomeImpresso("JOSÉ R M Silva");
@@ -130,7 +134,7 @@ public class CartaoDeCreditoTest {
         logger.info("Executando t04: selecionarCartaoPorNumero");
 
         TypedQuery<CartaoDeCredito> query = em.createNamedQuery("CartaoDeCredito.PorNumero", CartaoDeCredito.class);
-        query.setParameter("numero", "4024007168509924");
+        query.setParameter("numero", "4916386629348101");
 
         CartaoDeCredito cartao = query.getSingleResult();
 
@@ -142,7 +146,7 @@ public class CartaoDeCreditoTest {
         logger.info("Executando t05: selecionarCartaoPorCliente");
 
         TypedQuery<CartaoDeCredito> query = em.createNamedQuery("CartaoDeCredito.PorCliente", CartaoDeCredito.class);
-        query.setParameter("clienteId", 1L);
+        query.setParameter("clienteId", 2L);
 
         CartaoDeCredito cartao = query.getSingleResult();
 
@@ -154,8 +158,8 @@ public class CartaoDeCreditoTest {
         logger.info("Executando t06: selecionarCartaoPorClienteBandeira");
 
         TypedQuery<CartaoDeCredito> query = em.createNamedQuery("CartaoDeCredito.PorClienteBandeira", CartaoDeCredito.class);
-        query.setParameter("clienteId", 1L);
-        query.setParameter("bandeira", Bandeira.VISA);
+        query.setParameter("clienteId", 2L);
+        query.setParameter("bandeira", Bandeira.ELO);
 
         CartaoDeCredito cartao = query.getSingleResult();
 
@@ -163,18 +167,82 @@ public class CartaoDeCreditoTest {
         logger.log(Level.INFO, "Cartao de Crédito {} selecionado PorClienteBandeira", cartao.getId());
     }
 
+    
+    
     @Test
-    public void t07_removerCartaoPorValido() {
-        logger.info("Executando t07: removerCartaoDeCreditoValido");
+    public void t07_inserirCartaoInvalido(){
+        logger.info("Executando t07: inserirCartaoInvalido");
+        
+        CartaoDeCredito cartao = new CartaoDeCredito();
+        
+        try {
+            
+            cartao.setNomeImpresso("NOMEIMPRESSOCOMTAMANHONAOPERMITIDONOMEIMPRESSOCOMTAMANHONAOPERMITIDO");
+            cartao.setNumero("0000111100001111");
+            cartao.setValidade(new GregorianCalendar(1990, 5, 1).getTime());
+            
+            em.persist(cartao);
+            em.flush();
+        } catch (ConstraintViolationException ex) {
+            Logger.getGlobal().info(ex.getMessage());
 
-        TypedQuery<CartaoDeCredito> query = em.createNamedQuery("CartaoDeCredito.PorNomeImpresso", CartaoDeCredito.class);
-        query.setParameter("nomeImpresso", "JOSÉ R M SILVA");
+            Set<ConstraintViolation<?>> constraintViolations = ex.getConstraintViolations();
 
-        CartaoDeCredito cartao = (CartaoDeCredito) query.getSingleResult();
+            if (logger.isLoggable(Level.INFO)) {
+                for (ConstraintViolation violation : constraintViolations) {
+                    Logger.getGlobal().log(Level.INFO, "{0}.{1}: {2}", new Object[]{violation.getRootBeanClass(), violation.getPropertyPath(), violation.getMessage()});
+                }
+            }
+
+            assertEquals(5, constraintViolations.size());
+        }
+    }
+    
+    @Test
+    public void t08_atualizarCartaoInvalido(){
+        logger.info("Executando t08: atualizarCartaoInvalido");
+
+        TypedQuery<CartaoDeCredito> query = em.createNamedQuery("CartaoDeCredito.PorClienteBandeira", CartaoDeCredito.class);
+        query.setParameter("clienteId", 2L);
+        query.setParameter("bandeira", Bandeira.ELO);
+        
+        CartaoDeCredito cartao = query.getSingleResult();
+        
+        try {
+            
+            cartao.setCliente(null);
+            cartao.setNumero("2222111122221111");
+            
+            em.flush();
+        } catch (ConstraintViolationException ex) {
+            Logger.getGlobal().info(ex.getMessage());
+
+            Set<ConstraintViolation<?>> constraintViolations = ex.getConstraintViolations();
+
+            if (logger.isLoggable(Level.INFO)) {
+                for (ConstraintViolation violation : constraintViolations) {
+                    Logger.getGlobal().log(Level.INFO, "{0}.{1}: {2}", new Object[]{violation.getRootBeanClass(), violation.getPropertyPath(), violation.getMessage()});
+                }
+            }
+
+            assertEquals(2, constraintViolations.size());
+        }
+        
+    }
+    
+    @Test
+    public void t09_removerCartaoValido() {
+        logger.info("Executando t09: removerCartaoValido");
+
+        TypedQuery<CartaoDeCredito> query = em.createNamedQuery("CartaoDeCredito.PorClienteBandeira", CartaoDeCredito.class);
+        query.setParameter("clienteId", 2L);
+        query.setParameter("bandeira", Bandeira.ELO);
+        
+        CartaoDeCredito cartao = query.getSingleResult();
         
         em.remove(cartao);
         em.flush();
         assertEquals(0, query.getResultList().size());
     }
-
+    
 }

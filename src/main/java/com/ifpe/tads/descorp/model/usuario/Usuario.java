@@ -12,6 +12,8 @@ import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorType;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -56,14 +58,13 @@ import org.hibernate.validator.constraints.br.CPF;
                     query = "SELECT u FROM Usuario u WHERE u.email = :email"
             ),
             @NamedQuery(
-                    name = "Usuario.PorLogin",
-                    query = "SELECT u FROM Usuario u WHERE u.login = :login"
+                    name = "Usuario.fazerLogin",
+                    query = "SELECT u FROM Usuario u WHERE u.login = :login and u.senha = :senha"
+            ),
+            @NamedQuery(
+                    name = "Usuario.PorTipo",
+                    query = "SELECT u FROM Usuario u WHERE u.tipo = :tipo"
             )
-                
-                /*
-                    Criar query para listar usuários por TIPO.
-                */
-
         }
 )
 public class Usuario implements Serializable {
@@ -110,7 +111,9 @@ public class Usuario implements Serializable {
     @Transient
     private Integer idade;
 
-    @Transient
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    @Column(name = "TP_USUARIO")
     private TipoUsuario tipo;
     
     private void calcularIdade() {

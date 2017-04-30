@@ -63,7 +63,7 @@ public class CartaoDeCredito implements Serializable {
 
     @NotBlank
     @Size(min = 1, max = 30)
-    @Column(name = "TXT_NOME")
+    @Column(name = "TXT_NOME_IMPRESSO")
     private String nomeImpresso;
 
     @Future
