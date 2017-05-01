@@ -2,6 +2,7 @@ package com.ifpe.tads.descorp.model.compra;
 
 import com.ifpe.tads.descorp.model.produto.Produto;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -12,6 +13,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 /**
  *
@@ -25,25 +30,32 @@ public class ItemCompra implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
+    @NotNull
+    @Min(1)
+    @Max(100000)
     @Column(name = "NUM_QUANTIDADE", nullable = false)
     private Integer quantidade;
 
+    @NotNull
+    @DecimalMin("0.1")
     @Column(name = "NUM_PRECO_UNITARIO", nullable = false)
-    private Double precoUnitario;
+    private BigDecimal precoUnitario;
 
     @Transient
-    private Double subTotal;
+    private BigDecimal subTotal;
     
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "ID_PRODUTO", referencedColumnName = "ID")
     private Produto produto;
     
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "ID_COMPRA", referencedColumnName = "ID")
     private Compra compra;
 
     private void calcularSubTotal() {
-        this.subTotal = this.precoUnitario * this.quantidade;
+        this.subTotal = this.precoUnitario.multiply(new BigDecimal(this.quantidade));
     }
     
     public Long getId() {
@@ -62,20 +74,20 @@ public class ItemCompra implements Serializable {
         this.quantidade = quantidade;
     }
 
-    public Double getPrecoUnitario() {
+    public BigDecimal getPrecoUnitario() {
         return precoUnitario;
     }
 
-    public void setPrecoUnitario(Double precoUnitario) {
+    public void setPrecoUnitario(BigDecimal precoUnitario) {
         this.precoUnitario = precoUnitario;
     }
 
-    public Double getSubTotal() {
+    public BigDecimal getSubTotal() {
         this.calcularSubTotal();
         return subTotal;
     }
 
-    public void setSubTotal(Double subTotal) {
+    public void setSubTotal(BigDecimal subTotal) {
         this.subTotal = subTotal;
     }
 
@@ -118,7 +130,7 @@ public class ItemCompra implements Serializable {
     
     @Override
     public String toString() {
-        return "com.ifpe.tads.descorp.model.compra.ItemCompra[ id=" + id + ":" + Double.toString(precoUnitario) + " ]";
+        return "com.ifpe.tads.descorp.model.compra.ItemCompra[ id=" + id + ":" + precoUnitario + " ]";
     }
     
 }

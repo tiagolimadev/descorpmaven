@@ -2,6 +2,7 @@ package com.ifpe.tads.descorp.model.usuario;
 
 import dbunit.DbUnitUtil;
 import java.util.GregorianCalendar;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.EntityManager;
@@ -9,6 +10,8 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import javax.persistence.TypedQuery;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -107,8 +110,77 @@ public class AdministradorTest {
     }
 
     @Test
-    public void t03_removerAdministradorValido() {
-        logger.info("Executando t03: removerAdministradorValido");
+    public void t03_inserirAdministradorInvalido() {
+        logger.info("Executando t03: inserirAdministradorInvalido");
+
+        try {
+
+            Administrador adm = new Administrador();
+
+            adm.setCpf("1");
+            adm.setLogin("1");
+            adm.setSenha("1");
+            adm.setNome("");
+            
+            adm.setDataNascimento(new GregorianCalendar(1952, 2, 5).getTime());
+            adm.setEmail("a@a.com");
+            adm.setTipo(TipoUsuario.ADMINISTRADOR);
+
+            em.persist(adm);
+            em.flush();
+
+        } catch (ConstraintViolationException ex) {
+            Logger.getGlobal().info(ex.getMessage());
+
+            Set<ConstraintViolation<?>> constraintViolations = ex.getConstraintViolations();
+
+            if (logger.isLoggable(Level.INFO)) {
+                for (ConstraintViolation violation : constraintViolations) {
+                    Logger.getGlobal().log(Level.INFO, "{0}.{1}: {2}", new Object[]{violation.getRootBeanClass(), violation.getPropertyPath(), violation.getMessage()});
+                }
+            }
+
+            assertEquals(4, constraintViolations.size());
+        }
+
+    }
+
+    @Test
+    public void t04_atualizarAdministradorInvalido() {
+        logger.info("Executando t04: atualizarAdministradorInvalido");
+
+        try {
+
+            TypedQuery<Usuario> query = em.createNamedQuery("Usuario.PorCPF", Usuario.class);
+            query.setParameter("cpf", "58166424720");
+
+            Administrador adm = (Administrador) query.getSingleResult();
+
+            adm.setNome("ASDFASDFASDFASDFASDFASDFASDFASDFASDFASDFASDFASDFASDFASDFASDFASDFASDFASDFASDFASDFASDFASDFASDFASDFASDFASDFASDFASDFASDFASDFASDF");
+            adm.setSenha("ASDFASDFASDFASDFASDFASDFASDFASDF");
+            adm.setLogin("ASDFASDFASDFASDFASDFASDFASDFASDF");
+            
+            em.flush();
+
+        } catch (ConstraintViolationException ex) {
+            Logger.getGlobal().info(ex.getMessage());
+
+            Set<ConstraintViolation<?>> constraintViolations = ex.getConstraintViolations();
+
+            if (logger.isLoggable(Level.INFO)) {
+                for (ConstraintViolation violation : constraintViolations) {
+                    Logger.getGlobal().log(Level.INFO, "{0}.{1}: {2}", new Object[]{violation.getRootBeanClass(), violation.getPropertyPath(), violation.getMessage()});
+                }
+            }
+
+            assertEquals(3, constraintViolations.size());
+        }
+
+    }
+    
+    @Test
+    public void t05_removerAdministradorValido() {
+        logger.info("Executando t05: removerAdministradorValido");
 
         TypedQuery<Usuario> query = em.createNamedQuery("Usuario.PorCPF", Usuario.class);
         query.setParameter("cpf", "58166424720");

@@ -31,7 +31,7 @@ public class ItemVenda implements Serializable {
     private Long id;
     
     @Min(1)
-    @Max(100)
+    @Max(1000)
     @Column(name = "NUM_QUANTIDADE", nullable = false)
     private Integer quantidade;
     

@@ -1,8 +1,11 @@
 package com.ifpe.tads.descorp.model.compra;
 
+import com.ifpe.tads.descorp.jpa.validator.ValidaHoje;
 import com.ifpe.tads.descorp.model.fornecedor.Fornecedor;
 import com.ifpe.tads.descorp.model.usuario.Administrador;
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -21,6 +24,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
 
 /**
  *
@@ -35,28 +39,36 @@ public class Compra implements Serializable {
     private Long id;
 
     @Transient
-    private Double valorTotal;
+    private BigDecimal valorTotal;
 
+    @ValidaHoje
+    @NotNull
     @Temporal(TemporalType.DATE)
     @Column(name = "DT_DATA_COMPRA", nullable = false)
     private Date dataCompra;
 
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "ID_ADMINISTRADOR", referencedColumnName = "ID")
     private Administrador administrador;
 
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "ID_FORNECEDOR", referencedColumnName = "ID")
     private Fornecedor fornecedor;
 
+    @NotNull
     @OneToMany(mappedBy = "compra", fetch = FetchType.LAZY,
             cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItemCompra> itensCompra;
 
+    @Column(name = "SN_CANCELADA", columnDefinition="tinyint(1) default 1")
+    private Boolean cancelada;
+    
     private void calcularValorTotal() {
-        double total = 0;
+        BigDecimal total = new BigDecimal(BigInteger.ZERO);
         for (ItemCompra item : this.itensCompra) {
-            total += item.getSubTotal();
+            total.add(item.getSubTotal());
         }
         this.valorTotal = total;
     }
@@ -89,12 +101,12 @@ public class Compra implements Serializable {
         this.itensCompra = itensCompra;
     }
 
-    public Double getValorTotal() {
+    public BigDecimal getValorTotal() {
         this.getAdministrador();
         return valorTotal;
     }
 
-    public void setValorTotal(Double valorTotal) {
+    public void setValorTotal(BigDecimal valorTotal) {
         this.valorTotal = valorTotal;
     }
 
@@ -114,6 +126,14 @@ public class Compra implements Serializable {
         this.fornecedor = fornecedor;
     }
 
+    public Boolean getCancelada() {
+        return cancelada;
+    }
+
+    public void setCancelada(Boolean cancelada) {
+        this.cancelada = cancelada;
+    }
+    
     @Override
     public int hashCode() {
         int hash = 0;

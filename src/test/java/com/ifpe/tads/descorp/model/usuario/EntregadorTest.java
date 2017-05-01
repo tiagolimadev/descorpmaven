@@ -7,6 +7,7 @@ package com.ifpe.tads.descorp.model.usuario;
 
 import dbunit.DbUnitUtil;
 import java.util.GregorianCalendar;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.EntityManager;
@@ -14,12 +15,14 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import javax.persistence.TypedQuery;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 import org.junit.After;
 import org.junit.AfterClass;
+import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import org.junit.FixMethodOrder;
 import org.junit.runners.MethodSorters;
@@ -114,8 +117,75 @@ public class EntregadorTest {
     }
 
     @Test
-    public void t03_removerEntregadorValido() {
-        logger.info("Executando t03: removerEntregadorValido");
+    public void t03_inserirEntregadorInvalido() {
+        logger.info("Executando t03: inserirEntregadorInvalido");
+
+        try {
+
+            Entregador entregador = new Entregador();
+
+            entregador.setCpf("1");
+            entregador.setDataNascimento(new GregorianCalendar(2028, 1, 12).getTime());
+            entregador.setSenha("1234");
+            
+            entregador.setNome("Teste");
+            entregador.setEmail("asdf@asdf.com");
+            entregador.setLogin("ASDF");
+            entregador.setTipo(TipoUsuario.ENTREGADOR);
+
+            em.persist(entregador);
+            em.flush();
+
+        } catch (ConstraintViolationException ex) {
+            Logger.getGlobal().info(ex.getMessage());
+
+            Set<ConstraintViolation<?>> constraintViolations = ex.getConstraintViolations();
+
+            if (logger.isLoggable(Level.INFO)) {
+                for (ConstraintViolation violation : constraintViolations) {
+                    Logger.getGlobal().log(Level.INFO, "{0}.{1}: {2}", new Object[]{violation.getRootBeanClass(), violation.getPropertyPath(), violation.getMessage()});
+                }
+            }
+
+            assertEquals(3, constraintViolations.size());
+        }
+
+    }
+
+    @Test
+    public void t04_atualizarEntregadorInvalido() {
+        logger.info("Executando t04: atualizarEntregadorInvalido");
+
+        try {
+
+            TypedQuery<Usuario> query = em.createNamedQuery("Usuario.PorCPF", Usuario.class);
+            query.setParameter("cpf", "51272233766");
+
+            Entregador entregador = (Entregador) query.getSingleResult();
+
+            entregador.setEmail("e.com");
+
+            em.flush();
+
+        } catch (ConstraintViolationException ex) {
+            Logger.getGlobal().info(ex.getMessage());
+
+            Set<ConstraintViolation<?>> constraintViolations = ex.getConstraintViolations();
+
+            if (logger.isLoggable(Level.INFO)) {
+                for (ConstraintViolation violation : constraintViolations) {
+                    Logger.getGlobal().log(Level.INFO, "{0}.{1}: {2}", new Object[]{violation.getRootBeanClass(), violation.getPropertyPath(), violation.getMessage()});
+                }
+            }
+
+            assertEquals(1, constraintViolations.size());
+        }
+
+    }
+    
+    @Test
+    public void t05_removerEntregadorValido() {
+        logger.info("Executando t05: removerEntregadorValido");
 
         TypedQuery<Usuario> query = em.createNamedQuery("Usuario.PorCPF", Usuario.class);
         query.setParameter("cpf", "51272233766");

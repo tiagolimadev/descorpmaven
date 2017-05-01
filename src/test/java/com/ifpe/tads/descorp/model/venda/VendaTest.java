@@ -87,9 +87,6 @@ public class VendaTest {
         Cliente cliente = em.find(Cliente.class, 1L);
         Produto produto = em.find(Produto.class, 1L);
 
-        assertNotNull(cliente.getId());
-        logger.log(Level.INFO, "Cliente {0} incluído com sucesso.", cliente);
-
         venda.setCliente(cliente);
         venda.setDataVenda(new GregorianCalendar().getTime());
         venda.setItensVenda(new ArrayList<ItemVenda>());

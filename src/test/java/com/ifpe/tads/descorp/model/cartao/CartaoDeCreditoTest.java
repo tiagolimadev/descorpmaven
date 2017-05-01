@@ -5,9 +5,13 @@
  */
 package com.ifpe.tads.descorp.model.cartao;
 
-import com.ifpe.tads.descorp.model.produto.Categoria;
+import com.ifpe.tads.descorp.model.produto.Produto;
 import com.ifpe.tads.descorp.model.usuario.*;
+import com.ifpe.tads.descorp.model.venda.ItemVenda;
+import com.ifpe.tads.descorp.model.venda.Venda;
 import dbunit.DbUnitUtil;
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.Set;
 import java.util.logging.Level;
@@ -16,18 +20,19 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
+import javax.persistence.TemporalType;
 import javax.persistence.TypedQuery;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import org.junit.After;
 import org.junit.AfterClass;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.FixMethodOrder;
 import org.junit.runners.MethodSorters;
-import static org.junit.Assert.assertNotNull;
 
 /**
  *
@@ -82,106 +87,47 @@ public class CartaoDeCreditoTest {
     }
 
     @Test
-    public void t01_inserirCartaoValido() {
-        logger.info("Executando t01: inserirCartaoValido");
+    public void t01_inserirVendaValida() {
+        logger.info("Executando t01: inserirVendaValida");
 
-        CartaoDeCredito cartao = new CartaoDeCredito();
+        Venda venda = new Venda();
+
         Cliente cliente = em.find(Cliente.class, 1L);
-        
-        cartao.setBandeira(Bandeira.VISA);
-        cartao.setCliente(cliente);
-        cartao.setNomeImpresso("ZÉ RMS");
-        cartao.setValidade(new GregorianCalendar(2019, 5, 1).getTime());
-        cartao.setNumero("4024007168509924");
+        Produto produto = em.find(Produto.class, 1L);
 
-        em.persist(cartao);
+        assertNotNull(cliente.getId());
+        logger.log(Level.INFO, "Cliente {0} incluído com sucesso.", cliente);
+
+        venda.setCliente(cliente);
+        venda.setDataVenda(new GregorianCalendar().getTime());
+        venda.setItensVenda(new ArrayList<ItemVenda>());
+
+        ItemVenda item = new ItemVenda();
+        item.setPrecoUnitario(new BigDecimal("5.50"));
+        item.setQuantidade(5);
+        item.setVenda(venda);
+        item.setProduto(produto);
+
+        venda.getItensVenda().add(item);
+
+        em.persist(venda);
         em.flush();
-
-        assertNotNull(cartao.getId());
-        logger.log(Level.INFO, "CartaoDeCredito {0} incluído com sucesso.", cartao.getId());
+        assertNotNull(venda.getId());
+        logger.log(Level.INFO, "Venda {0} incluída com sucesso.", venda.getId());
 
     }
 
     @Test
-    public void t02_atualizarCartaoValido() {
-        logger.info("Executando t02: atualizarCartaoValido");
+    public void t02_inserirVendaInvalida() {
+        logger.info("Executando t02: inserirVendaInvalida");
 
-        TypedQuery<CartaoDeCredito> query = em.createNamedQuery("CartaoDeCredito.PorNomeImpresso", CartaoDeCredito.class);
-        query.setParameter("nomeImpresso", "XPTO");
+        Venda venda = new Venda();
 
-        CartaoDeCredito cartao = query.getSingleResult();
-        assertNotNull(cartao);
-
-        cartao.setNomeImpresso("JOSÉ R M Silva");
-        em.flush();
-        assertEquals(0, query.getResultList().size());
-    }
-
-    @Test
-    public void t03_selecionarCartaoPorNomeImpresso() {
-        logger.info("Executando t03: selecionarCartaoPorNomeImpresso");
-
-        TypedQuery<CartaoDeCredito> query = em.createNamedQuery("CartaoDeCredito.PorNomeImpresso", CartaoDeCredito.class);
-        query.setParameter("nomeImpresso", "JOSÉ R M SILVA");
-
-        CartaoDeCredito cartao = query.getSingleResult();
-
-        assertNotNull(cartao.getId());
-    }
-
-    @Test
-    public void t04_selecionarCartaoPorNumero() {
-        logger.info("Executando t04: selecionarCartaoPorNumero");
-
-        TypedQuery<CartaoDeCredito> query = em.createNamedQuery("CartaoDeCredito.PorNumero", CartaoDeCredito.class);
-        query.setParameter("numero", "4916386629348101");
-
-        CartaoDeCredito cartao = query.getSingleResult();
-
-        assertNotNull(cartao.getId());
-    }
-
-    @Test
-    public void t05_selecionarCartaoPorCliente() {
-        logger.info("Executando t05: selecionarCartaoPorCliente");
-
-        TypedQuery<CartaoDeCredito> query = em.createNamedQuery("CartaoDeCredito.PorCliente", CartaoDeCredito.class);
-        query.setParameter("clienteId", 2L);
-
-        CartaoDeCredito cartao = query.getSingleResult();
-
-        assertNotNull(cartao.getId());
-    }
-
-    @Test
-    public void t06_selecionarCartaoPorClienteBandeira() {
-        logger.info("Executando t06: selecionarCartaoPorClienteBandeira");
-
-        TypedQuery<CartaoDeCredito> query = em.createNamedQuery("CartaoDeCredito.PorClienteBandeira", CartaoDeCredito.class);
-        query.setParameter("clienteId", 2L);
-        query.setParameter("bandeira", Bandeira.ELO);
-
-        CartaoDeCredito cartao = query.getSingleResult();
-
-        assertNotNull(cartao.getId());
-        logger.log(Level.INFO, "Cartao de Crédito {} selecionado PorClienteBandeira", cartao.getId());
-    }
-
-    
-    
-    @Test
-    public void t07_inserirCartaoInvalido(){
-        logger.info("Executando t07: inserirCartaoInvalido");
-        
-        CartaoDeCredito cartao = new CartaoDeCredito();
-        
         try {
-            
-            cartao.setNomeImpresso("NOMEIMPRESSOCOMTAMANHONAOPERMITIDONOMEIMPRESSOCOMTAMANHONAOPERMITIDO");
-            cartao.setNumero("0000111100001111");
-            cartao.setValidade(new GregorianCalendar(1990, 5, 1).getTime());
-            
-            em.persist(cartao);
+
+            venda.setDataVenda(new GregorianCalendar(1992, 1, 2).getTime());
+
+            em.persist(venda);
             em.flush();
         } catch (ConstraintViolationException ex) {
             Logger.getGlobal().info(ex.getMessage());
@@ -194,25 +140,24 @@ public class CartaoDeCreditoTest {
                 }
             }
 
-            assertEquals(5, constraintViolations.size());
+            assertEquals(3, constraintViolations.size());
         }
     }
-    
-    @Test
-    public void t08_atualizarCartaoInvalido(){
-        logger.info("Executando t08: atualizarCartaoInvalido");
 
-        TypedQuery<CartaoDeCredito> query = em.createNamedQuery("CartaoDeCredito.PorClienteBandeira", CartaoDeCredito.class);
+    @Test
+    public void t03_atualizarVendaInvalida() {
+        logger.info("Executando t03: atualizarVendaInvalida");
+
+        TypedQuery<Venda> query = em.createNamedQuery("Venda.PorDataCliente", Venda.class);
         query.setParameter("clienteId", 2L);
-        query.setParameter("bandeira", Bandeira.ELO);
-        
-        CartaoDeCredito cartao = query.getSingleResult();
-        
+        query.setParameter("dataVenda", new GregorianCalendar(2017, 2, 15).getTime(), TemporalType.DATE);
+
+        Venda venda = query.getSingleResult();
+
         try {
-            
-            cartao.setCliente(null);
-            cartao.setNumero("2222111122221111");
-            
+
+            venda.setDataVenda(new GregorianCalendar(2014, 3, 1).getTime());
+
             em.flush();
         } catch (ConstraintViolationException ex) {
             Logger.getGlobal().info(ex.getMessage());
@@ -225,22 +170,22 @@ public class CartaoDeCreditoTest {
                 }
             }
 
-            assertEquals(2, constraintViolations.size());
+            assertEquals(1, constraintViolations.size());
         }
-        
-    }
-    
-    @Test
-    public void t09_removerCartaoValido() {
-        logger.info("Executando t09: removerCartaoValido");
 
-        TypedQuery<CartaoDeCredito> query = em.createNamedQuery("CartaoDeCredito.PorClienteBandeira", CartaoDeCredito.class);
+    }
+
+    @Test
+    public void t05_removerVendaValida() {
+        logger.info("Executando t05: removerVendaValida");
+
+        TypedQuery<Venda> query = em.createNamedQuery("Venda.PorDataCliente", Venda.class);
         query.setParameter("clienteId", 2L);
-        query.setParameter("bandeira", Bandeira.ELO);
-        
-        CartaoDeCredito cartao = query.getSingleResult();
-        
-        em.remove(cartao);
+        query.setParameter("dataVenda", new GregorianCalendar(2017, 2, 15).getTime(), TemporalType.DATE);
+
+        Venda venda = query.getSingleResult();
+
+        em.remove(venda);
         em.flush();
         assertEquals(0, query.getResultList().size());
     }
