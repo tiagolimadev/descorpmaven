@@ -9,7 +9,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.validation.constraints.Size;
+import org.hibernate.validator.constraints.NotBlank;
 
 /**
  *
@@ -17,14 +21,26 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "TB_FORNECEDOR")
+@NamedQueries(
+    {
+        @NamedQuery(
+            name = "Fornecedor.PorNome",
+            query = "SELECT f FROM Fornecedor f WHERE f.nome LIKE :nome ORDER BY f.id"
+        )
+    }
+)
 public class Fornecedor implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
+    @NotBlank
+    @Size(max = 50)
     @Column(name = "TXT_NOME")
     private String nome;
     
+    @NotBlank
+    @Size(max = 500)
     @Column(name = "TXT_DESCRICAO")
     private String descricao;
     
