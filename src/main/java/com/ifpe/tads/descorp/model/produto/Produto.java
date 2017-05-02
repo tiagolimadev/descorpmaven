@@ -14,6 +14,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.NamedNativeQueries;
+import javax.persistence.NamedNativeQuery;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.DecimalMin;
@@ -25,10 +29,40 @@ import org.hibernate.validator.constraints.NotBlank;
 
 /**
  *
- * @author Tiago Lima
+ * @author Tiago Lima <tiagolimadev@outlook.com>
  */
 @Entity
 @Table(name = "TB_PRODUTO")
+@NamedQueries(
+        {
+            @NamedQuery(
+                    name = "Produto.PorNome",
+                    query = "SELECT p FROM Produto p WHERE p.nome LIKE :nome"
+            ),
+            @NamedQuery(
+                    name = "Produto.PorCodigo",
+                    query = "SELECT p FROM Produto p WHERE p.codigo LIKE :codigo"
+            ),
+        }
+)
+@NamedNativeQueries(
+        {
+            @NamedNativeQuery(
+                    name = "Produto.PorMenorPrecoSQL",
+                    query = "SELECT ID, TXT_CODIGO, TXT_NOME, TXT_DESCRICAO, "
+                            + "NUM_PRECO, NUM_QTDE_DISPONIVEL FROM TB_PRODUTO "
+                            + "WHERE NUM_PRECO = (SELECT MIN(NUM_PRECO) FROM TB_PRODUTO)",
+                    resultClass = Produto.class
+            ),
+            @NamedNativeQuery(
+                    name = "Produto.PorMaiorPrecoSQL",
+                    query = "SELECT ID, TXT_CODIGO, TXT_NOME, TXT_DESCRICAO, "
+                            + "NUM_PRECO, NUM_QTDE_DISPONIVEL FROM TB_PRODUTO "
+                            + "WHERE NUM_PRECO = (SELECT MAX(NUM_PRECO) FROM TB_PRODUTO)",
+                    resultClass = Produto.class
+            ),
+        }
+)
 public class Produto implements Serializable {
 
     @Id
