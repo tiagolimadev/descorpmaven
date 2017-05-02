@@ -27,7 +27,8 @@ public class ValidadorHoje implements ConstraintValidator<ValidaHoje, Date> {
     public boolean isValid(Date valor, ConstraintValidatorContext context) {
         Format formatter = new SimpleDateFormat("dd/MM/yyyy");
         
-        return valor == null ? false : (formatter.format(new Date()).equals(formatter.format(valor)));
+//        return valor == null ? false : (formatter.format(new Date()).equals(formatter.format(valor)));
+        return (formatter.format(new Date())).compareTo(formatter.format(valor)) <= 0 ? true : false;
     }
     
 }

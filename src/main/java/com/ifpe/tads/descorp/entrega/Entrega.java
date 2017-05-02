@@ -14,9 +14,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
 
 /**
  *
@@ -24,6 +27,18 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @Table(name = "TB_ENTREGA")
+@NamedQueries(
+        {
+            @NamedQuery(
+                    name = "Entrega.PorDataEntrega",
+                    query = "SELECT e FROM Entrega e WHERE e.dataEntrega = :dataEntrega"
+            ),
+            @NamedQuery(
+                    name = "Entrega.PorStatusEntrega",
+                    query = "SELECT e FROM Entrega e WHERE e.statusEntrega = :statusEntrega"
+            ),
+        }
+)
 public class Entrega implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,18 +52,22 @@ public class Entrega implements Serializable {
         this.id = id;
     }
     
+    @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "TXT_STATUS_ENTREGA")
     private StatusEntrega statusEntrega;
     
+    @NotNull
     @Temporal(TemporalType.DATE)
     @Column(name = "DT_DATA_ENTREGA", nullable = false)
     private Date dataEntrega;
     
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(name = "ID_VENDA", referencedColumnName = "ID")
     private Venda venda;
     
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(name = "ID_ENTREGADOR", referencedColumnName = "ID")
     private Entregador entregador;
