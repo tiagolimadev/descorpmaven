@@ -84,15 +84,12 @@ public class EntregaTest {
         query1.setParameter("nome", "Mirela Silva");
         Entregador entregador = query1.getSingleResult();
         
-        TypedQuery<Venda> query2 = em.createNamedQuery("Venda.PorDataCliente", Venda.class);
-        query2.setParameter("clienteId", 2L);
-        query2.setParameter("dataVenda", new GregorianCalendar(2017, 2, 15).getTime(), TemporalType.DATE);
-        Venda venda = query2.getSingleResult();
+        Venda venda = em.find(Venda.class, 1L);
         
         Entrega entrega = new Entrega();
-        entrega.setDataEntrega(new GregorianCalendar(2017, 5, 7).getTime());
+        entrega.setDataEntrega(new GregorianCalendar().getTime());
         entrega.setEntregador(entregador);
-        entrega.setStatusEntrega(StatusEntrega.CANCELADA);
+        entrega.setStatusEntrega(StatusEntrega.ESPERA);
         entrega.setVenda(venda);
         
         em.persist(entrega);
@@ -135,7 +132,6 @@ public class EntregaTest {
         query.setParameter("dataEntrega", new GregorianCalendar(2017, 4, 4).getTime());
         
         Entrega entrega = query.getSingleResult();
-        assertNotNull(entrega);
         entrega.setStatusEntrega(StatusEntrega.ENTREGUE);
         
         em.flush();
@@ -151,8 +147,6 @@ public class EntregaTest {
         TypedQuery<Entrega> query = em.createNamedQuery("Entrega.PorStatusEntrega", Entrega.class);
         query.setParameter("statusEntrega", StatusEntrega.CANCELADA);
         Entrega entrega = query.getSingleResult();
-        
-        assertNotNull(entrega);
         
         em.remove(entrega);
         em.flush();

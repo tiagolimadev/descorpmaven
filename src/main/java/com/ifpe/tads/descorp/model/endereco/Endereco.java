@@ -95,14 +95,14 @@ public class Endereco implements Serializable {
     @Column(name = "TXT_ESTADO")
     private String estado;
     
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinTable(name = "TB_ENDERECOS_FORNECEDOR", joinColumns = {
         @JoinColumn(name = "ID_ENDERECO")},
             inverseJoinColumns = {
                 @JoinColumn(name = "ID_FORNECEDOR")})
     private List<Fornecedor> fornecedores;
     
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinTable(name = "TB_ENDERECOS_USUARIO", joinColumns = {
         @JoinColumn(name = "ID_ENDERECO")},
             inverseJoinColumns = {

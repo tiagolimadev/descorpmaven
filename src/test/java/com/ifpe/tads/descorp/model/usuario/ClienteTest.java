@@ -188,7 +188,7 @@ public class ClienteTest {
         logger.info("Executando t05: removerClienteValido");
 
         TypedQuery<Usuario> query = em.createNamedQuery("Usuario.PorCPF", Usuario.class);
-        query.setParameter("cpf", "01234567890");
+        query.setParameter("cpf", "66584360458");
 
         Cliente cliente = (Cliente) query.getSingleResult();
 

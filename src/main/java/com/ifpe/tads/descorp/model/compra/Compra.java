@@ -19,6 +19,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -32,6 +34,14 @@ import javax.validation.constraints.NotNull;
  */
 @Entity
 @Table(name = "TB_COMPRA")
+@NamedQueries(
+        {
+            @NamedQuery(
+                    name = "Compra.PorAdministradorMesAno",
+                    query = "SELECT c FROM Compra c, Administrador a WHERE a.cpf = :cpf AND function('year',c.dataCompra) = :ano AND function('month', c.dataCompra) = :mes"
+            )
+        }
+)
 public class Compra implements Serializable {
 
     @Id
@@ -44,7 +54,7 @@ public class Compra implements Serializable {
     @ValidaHoje
     @NotNull
     @Temporal(TemporalType.DATE)
-    @Column(name = "DT_DATA_COMPRA", nullable = false)
+    @Column(name = "DT_COMPRA", nullable = false)
     private Date dataCompra;
 
     @NotNull

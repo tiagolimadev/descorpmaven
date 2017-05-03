@@ -35,12 +35,12 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Table(name = "TB_VENDA")
 @NamedQueries(
-    {
-        @NamedQuery(
-            name = "Venda.PorDataCliente",
-            query = "SELECT v FROM Venda v WHERE v.cliente.id = :clienteId AND v.dataVenda = :dataVenda"
-        )
-    }
+        {
+            @NamedQuery(
+                    name = "Venda.PorClienteMesAno",
+                    query = "SELECT v FROM Venda v, Cliente c WHERE c.cpf = :cpf AND function('year',v.dataVenda) = :ano AND function('month', v.dataVenda) = :mes"
+            )
+        }
 )
 public class Venda implements Serializable {
 
@@ -69,12 +69,12 @@ public class Venda implements Serializable {
     @OneToMany(mappedBy = "venda", fetch = FetchType.LAZY,
             cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItemVenda> itensVenda;
-    
+
     @OneToMany(mappedBy = "venda", fetch = FetchType.LAZY,
             cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Entrega> entregas;
-    
-    @Column(name = "SN_CANCELADA", columnDefinition="tinyint(1) default 1")
+
+    @Column(name = "SN_CANCELADA", columnDefinition = "tinyint(1) default 1")
     private Boolean cancelada;
 
     private void calcularValorTotal() {
@@ -84,7 +84,7 @@ public class Venda implements Serializable {
         }
         this.valorTotal = total;
     }
-    
+
     public Long getId() {
         return id;
     }
@@ -170,11 +170,11 @@ public class Venda implements Serializable {
 
         return false;
     }
-    
+
     @Override
     public String toString() {
         DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
         return "com.ifpe.tads.descorp.model.venda.Venda[ id=" + id + ":" + df.format(dataVenda) + " ]";
     }
-    
+
 }

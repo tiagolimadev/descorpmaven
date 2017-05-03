@@ -86,7 +86,7 @@ public class Produto implements Serializable {
 
     @DecimalMin("0.1")
     @NotNull
-    @Column(name = "NUM_PRECO")
+    @Column(name = "NUM_PRECO", scale = 2)
     private BigDecimal preco;
 
     @Min(0)
@@ -95,7 +95,7 @@ public class Produto implements Serializable {
     @Column(name = "NUM_QTDE_DISPONIVEL")
     private Long qtdeDisponivel;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinTable(name = "TB_PRODUTOS_CATEGORIAS", joinColumns = {
         @JoinColumn(name = "ID_PRODUTO")},
             inverseJoinColumns = {

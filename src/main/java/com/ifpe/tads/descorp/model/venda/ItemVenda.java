@@ -32,12 +32,12 @@ public class ItemVenda implements Serializable {
     
     @Min(1)
     @Max(1000)
-    @Column(name = "NUM_QUANTIDADE", nullable = false)
+    @Column(name = "NUM_QUANTIDADE")
     private Integer quantidade;
     
     @DecimalMin("0.1")
     @NotNull
-    @Column(name = "NUM_PRECO_UNITARIO", nullable = false)
+    @Column(name = "NUM_PRECO_UNITARIO", scale = 2)
     private BigDecimal precoUnitario;
     
     @Transient
@@ -54,7 +54,11 @@ public class ItemVenda implements Serializable {
     private Venda venda;
 
     private void calcularSubTotal(){
-        this.subTotal = this.precoUnitario.multiply(new BigDecimal(this.quantidade));
+        if(precoUnitario != null && quantidade != null){
+            this.subTotal = this.precoUnitario.multiply(new BigDecimal(this.quantidade));
+        }else {
+            this.subTotal = BigDecimal.ZERO;
+        }
     }
     
     public Long getId() {

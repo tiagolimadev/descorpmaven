@@ -59,7 +59,7 @@ public class Entrega implements Serializable {
     
     @NotNull
     @Temporal(TemporalType.DATE)
-    @Column(name = "DT_DATA_ENTREGA", nullable = false)
+    @Column(name = "DT_ENTREGA", nullable = false)
     private Date dataEntrega;
     
     @NotNull

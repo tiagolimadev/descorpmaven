@@ -137,11 +137,7 @@ public class VendaTest {
     public void t03_atualizarVendaInvalida() {
         logger.info("Executando t03: atualizarVendaInvalida");
 
-        TypedQuery<Venda> query = em.createNamedQuery("Venda.PorDataCliente", Venda.class);
-        query.setParameter("clienteId", 2L);
-        query.setParameter("dataVenda", new GregorianCalendar(2017, 2, 15).getTime(), TemporalType.DATE);
-
-        Venda venda = query.getSingleResult();
+        Venda venda = em.find(Venda.class, 1L);
 
         try {
 
@@ -165,18 +161,31 @@ public class VendaTest {
     }
 
     @Test
+    public void t04_listarVendasClienteMesAno() {
+        logger.info("Executando t04: listarVendasClienteMesAno");
+
+        TypedQuery<Venda> query = em.createNamedQuery("Venda.PorClienteMesAno", Venda.class);
+        query.setParameter("cpf", "01234567890");
+        query.setParameter("mes", 3);
+        query.setParameter("ano", 2017);
+
+        assertEquals(2, query.getResultList().size());
+    }
+    
+    @Test
     public void t05_removerVendaValida() {
         logger.info("Executando t05: removerVendaValida");
 
-        TypedQuery<Venda> query = em.createNamedQuery("Venda.PorDataCliente", Venda.class);
-        query.setParameter("clienteId", 2L);
-        query.setParameter("dataVenda", new GregorianCalendar(2017, 2, 15).getTime(), TemporalType.DATE);
+        TypedQuery<Venda> query = em.createNamedQuery("Venda.PorClienteMesAno", Venda.class);
+        query.setParameter("cpf", "01234567890");
+        query.setParameter("mes", 3);
+        query.setParameter("ano", 2017);
 
-        Venda venda = query.getSingleResult();
+        Venda venda = em.find(Venda.class, 2L);
 
         em.remove(venda);
         em.flush();
-        assertEquals(0, query.getResultList().size());
+        assertEquals(1, query.getResultList().size());
     }
 
 }

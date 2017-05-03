@@ -38,7 +38,7 @@ public class ItemCompra implements Serializable {
 
     @NotNull
     @DecimalMin("0.1")
-    @Column(name = "NUM_PRECO_UNITARIO", nullable = false)
+    @Column(name = "NUM_PRECO_UNITARIO", scale = 2)
     private BigDecimal precoUnitario;
 
     @Transient
@@ -55,7 +55,11 @@ public class ItemCompra implements Serializable {
     private Compra compra;
 
     private void calcularSubTotal() {
-        this.subTotal = this.precoUnitario.multiply(new BigDecimal(this.quantidade));
+        if(precoUnitario != null && quantidade != null){
+            this.subTotal = this.precoUnitario.multiply(new BigDecimal(this.quantidade));
+        }else {
+            this.subTotal = BigDecimal.ZERO;
+        }
     }
     
     public Long getId() {

@@ -8,6 +8,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorType;
@@ -105,7 +106,7 @@ public abstract class Usuario implements Serializable {
     @Temporal(TemporalType.DATE)
     private Date dataNascimento;
 
-    @ManyToMany(mappedBy = "usuarios")
+    @ManyToMany(mappedBy = "usuarios", cascade = CascadeType.ALL)
     private List<Endereco> enderecos;
 
     @Transient
