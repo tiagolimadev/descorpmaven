@@ -11,7 +11,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
-import javax.persistence.TemporalType;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
@@ -146,9 +146,12 @@ public class EntregaTest {
         
         TypedQuery<Entrega> query = em.createNamedQuery("Entrega.PorStatusEntrega", Entrega.class);
         query.setParameter("statusEntrega", StatusEntrega.CANCELADA);
-        Entrega entrega = query.getSingleResult();
         
-        em.remove(entrega);
+        Query queryDelete = em.createQuery("DELETE FROM Entrega e WHERE e.statusEntrega = :status");
+        queryDelete.setParameter("status", StatusEntrega.CANCELADA);
+        
+        queryDelete.executeUpdate();
+        
         em.flush();
         
         assertEquals(0, query.getResultList().size());

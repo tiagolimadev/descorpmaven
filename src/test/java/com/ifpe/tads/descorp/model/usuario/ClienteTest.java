@@ -14,6 +14,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
@@ -108,9 +109,11 @@ public class ClienteTest {
         TypedQuery<Usuario> query = em.createNamedQuery("Usuario.PorNome", Usuario.class);
         query.setParameter("nome", "XPTO");
 
-        Cliente cliente = (Cliente) query.getSingleResult();
-
-        cliente.setNome("XPTO 12345");
+        Query queryUpdate = em.createQuery("UPDATE Usuario u SET u.nome = 'XPTO 12345' WHERE u.nome = :nome");
+        queryUpdate.setParameter("nome", "XPTO");
+        
+        queryUpdate.executeUpdate();
+        
         em.flush();
         assertEquals(0, query.getResultList().size());
     }

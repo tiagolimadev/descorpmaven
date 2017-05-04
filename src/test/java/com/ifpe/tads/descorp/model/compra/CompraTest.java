@@ -8,7 +8,6 @@ package com.ifpe.tads.descorp.model.compra;
 import com.ifpe.tads.descorp.model.fornecedor.Fornecedor;
 import com.ifpe.tads.descorp.model.produto.Produto;
 import com.ifpe.tads.descorp.model.usuario.*;
-import com.ifpe.tads.descorp.model.venda.Venda;
 import dbunit.DbUnitUtil;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -20,7 +19,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
-import javax.persistence.TemporalType;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
@@ -158,8 +157,20 @@ public class CompraTest {
     }
     
     @Test
-    public void t04_removerCompraValida() {
-        logger.info("Executando t04: removerCompraValida");
+    public void t04_quantidadeCompraMes() {
+        logger.info("Executando t04: quantidadeCompraMes");
+
+        Query query = em.createQuery("SELECT COUNT(1) FROM Compra c WHERE function('month', c.dataCompra) = :mes and function('year', c.dataCompra) = :ano");
+        query.setParameter("mes", 4);
+        query.setParameter("ano", 2017);
+
+        assertEquals(2L, query.getSingleResult());
+        
+    }
+    
+    @Test
+    public void t05_removerCompraValida() {
+        logger.info("Executando t05: removerCompraValida");
 
         TypedQuery<Compra> query = em.createNamedQuery("Compra.PorAdministradorMesAno", Compra.class);
         query.setParameter("cpf", "58166424720");

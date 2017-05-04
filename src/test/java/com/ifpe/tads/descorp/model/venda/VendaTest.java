@@ -13,7 +13,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
-import javax.persistence.TemporalType;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
@@ -173,8 +173,20 @@ public class VendaTest {
     }
     
     @Test
-    public void t05_removerVendaValida() {
-        logger.info("Executando t05: removerVendaValida");
+    public void t05_quantidadeVendasMes() {
+        logger.info("Executando t05: quantidadeVendasMes");
+    
+        Query query = em.createQuery("SELECT COUNT(1) FROM Venda v WHERE function('month', v.dataVenda) = :mes and function('year', v.dataVenda) = :ano");
+        query.setParameter("mes", 3);
+        query.setParameter("ano", 2017);
+        
+        assertEquals(2L, query.getSingleResult());
+        
+    }
+
+    @Test
+    public void t06_removerVendaValida() {
+        logger.info("Executando t06: removerVendaValida");
 
         TypedQuery<Venda> query = em.createNamedQuery("Venda.PorClienteMesAno", Venda.class);
         query.setParameter("cpf", "01234567890");
@@ -187,5 +199,5 @@ public class VendaTest {
         em.flush();
         assertEquals(1, query.getResultList().size());
     }
-
+    
 }
