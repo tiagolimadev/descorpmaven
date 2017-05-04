@@ -14,6 +14,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
+import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.validation.ConstraintViolation;
@@ -200,9 +201,22 @@ public class ClienteTest {
         assertEquals(0, query.getResultList().size());
     }
     
-    /*
-    
-    Criar testes de validação de unique: MySQLIntegrityConstraintViolationException
-    
-    */
+    @Test(expected = PersistenceException.class)
+    public void t06_inserirClienteComCpfDuplicado(){
+        logger.info("Executando t06: inserirClienteComCpfDuplicado");
+
+        Cliente cliente = new Cliente();
+
+        cliente.setCpf("87486422824");
+        cliente.setDataNascimento(new GregorianCalendar(1992, 11, 1).getTime());
+        cliente.setEmail("aasd@aasd.com");
+        cliente.setLogin("qweasdr");
+        cliente.setSenha("asdfasdfasdf");
+        cliente.setNome("Cliente AAAAA");
+        cliente.setTipo(TipoUsuario.CLIENTE);
+        
+        em.persist(cliente);
+        em.flush();
+        
+    }
 }
